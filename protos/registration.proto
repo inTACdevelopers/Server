@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package registration;
+
+service registrar{
+  rpc SingIn(SingInRequest) returns (SingInResponse);
+}
+
+message SingInRequest{
+  string login = 1 ;
+  string password = 2;
+}
+message SingInResponse{
+  int32 code = 1;
+  string state = 2;
+}
