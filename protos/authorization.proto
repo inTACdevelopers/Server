@@ -13,4 +13,5 @@ message SingUpRequest{
 message SingUpResponse{
   int32 code = 1;
   string state = 2;
+  int32 user_type = 3;
 }
