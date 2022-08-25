@@ -11,6 +11,7 @@ from config import *
 
 
 # python -m grpc_tools.protoc -I./protos --python_out=services/authorizer --grpc_python_out=services/authorizer protos/authorization.proto
+# python -m grpc_tools.protoc -I./protos --python_out=services/registrar --grpc_python_out=services/registrar protos/registration.proto
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))

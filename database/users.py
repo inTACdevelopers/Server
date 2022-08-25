@@ -45,7 +45,9 @@ def get_user_by_login_password(login, password):
 
             user_data = cursor.fetchone()
             if user_data is not None:
-                return User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5])
+                user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5])
+                user.id = user_data[0]
+                return user
             else:
                 return None
     except Exception as ex:

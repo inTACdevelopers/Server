@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13\x61uthorization.proto\x12\rauthorization\"0\n\rSingUpRequest\x12\r\n\x05login\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"@\n\x0eSingUpResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x11\n\tuser_type\x18\x03 \x01(\x05\x32S\n\nauthorizer\x12\x45\n\x06SingUp\x12\x1c.authorization.SingUpRequest\x1a\x1d.authorization.SingUpResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13\x61uthorization.proto\x12\rauthorization\"0\n\rSingUpRequest\x12\r\n\x05login\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"\x9d\x01\n\x0eSingUpResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x11\n\tuser_type\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x05\x12\r\n\x05login\x18\x05 \x01(\t\x12\x10\n\x08password\x18\x06 \x01(\t\x12\x0c\n\x04name\x18\x07 \x01(\t\x12\x0f\n\x07surname\x18\x08 \x01(\t\x12\x0f\n\x07\x63ompany\x18\t \x01(\t2S\n\nauthorizer\x12\x45\n\x06SingUp\x12\x1c.authorization.SingUpRequest\x1a\x1d.authorization.SingUpResponseb\x06proto3')
 
 
 
@@ -40,8 +40,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _SINGUPREQUEST._serialized_start=38
   _SINGUPREQUEST._serialized_end=86
-  _SINGUPRESPONSE._serialized_start=88
-  _SINGUPRESPONSE._serialized_end=152
-  _AUTHORIZER._serialized_start=154
-  _AUTHORIZER._serialized_end=237
+  _SINGUPRESPONSE._serialized_start=89
+  _SINGUPRESPONSE._serialized_end=246
+  _AUTHORIZER._serialized_start=248
+  _AUTHORIZER._serialized_end=331
 # @@protoc_insertion_point(module_scope)

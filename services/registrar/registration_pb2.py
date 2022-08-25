@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12registration.proto\x12\x0cregistration\"0\n\rSingInRequest\x12\r\n\x05login\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"-\n\x0eSingInResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t2P\n\tregistrar\x12\x43\n\x06SingIn\x12\x1b.registration.SingInRequest\x1a\x1c.registration.SingInResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12registration.proto\x12\x0cregistration\"`\n\rSingInRequest\x12\r\n\x05login\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x0f\n\x07surname\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\x12\x0f\n\x07\x63ompany\x18\x05 \x01(\t\"-\n\x0eSingInResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t2P\n\tregistrar\x12\x43\n\x06SingIn\x12\x1b.registration.SingInRequest\x1a\x1c.registration.SingInResponseb\x06proto3')
 
 
 
@@ -39,9 +39,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _SINGINREQUEST._serialized_start=36
-  _SINGINREQUEST._serialized_end=84
-  _SINGINRESPONSE._serialized_start=86
-  _SINGINRESPONSE._serialized_end=131
-  _REGISTRAR._serialized_start=133
-  _REGISTRAR._serialized_end=213
+  _SINGINREQUEST._serialized_end=132
+  _SINGINRESPONSE._serialized_start=134
+  _SINGINRESPONSE._serialized_end=179
+  _REGISTRAR._serialized_start=181
+  _REGISTRAR._serialized_end=261
 # @@protoc_insertion_point(module_scope)
