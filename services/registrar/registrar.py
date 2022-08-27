@@ -10,7 +10,7 @@ class SingInService(pb2_grpc.registrarServicer):
         sing_in_response = pb2.SingInResponse()
 
         sing_in_response.code = new_user(request.login, request.password, request.surname, request.name,
-                                         request.company)
+                                         request.birth_date, request.company )
 
         if sing_in_response.code == 0:
             sing_in_response.state = "OK"

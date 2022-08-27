@@ -6,7 +6,7 @@ from exeptions import *
 
 
 class User:
-    def __init__(self, login, password, surname, name, company):
+    def __init__(self, login, password, surname, name, company, birth):
         self.id = 0
         self.login = login
         self.password = password
@@ -14,6 +14,7 @@ class User:
         self.name = name
         self.company = company
         self.user_type = 0
+        self.birth_date = birth
 
 
 def get_user(login):
@@ -26,7 +27,7 @@ def get_user(login):
 
             user_data = cursor.fetchone()
             if user_data is not None:
-                return User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5])
+                return User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
             else:
                 return None
     except Exception as ex:
@@ -45,7 +46,7 @@ def get_user_by_login_password(login, password):
 
             user_data = cursor.fetchone()
             if user_data is not None:
-                user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5])
+                user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
                 user.id = user_data[0]
                 return user
             else:
@@ -73,7 +74,7 @@ def check_company_exist(company):
         conn.close()
 
 
-def new_user(login, password, name, surname, company=None):
+def new_user(login, password, name, surname, birth, company=None, ):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -83,8 +84,8 @@ def new_user(login, password, name, surname, company=None):
                 if company is not None and check_company_exist(company):
                     raise CompanyExistException(company)
                 cursor.execute(
-                    f"INSERT INTO users (login,password,surname,name,company) VALUES('{login}','{password}',"
-                    f"'{surname}','{name}','{company}')")
+                    f"INSERT INTO users (login,password,surname,name,company,birth_date) VALUES('{login}','{password}',"
+                    f"'{surname}','{name}','{company}','{birth}')")
                 return 0  # OK
         except exceptions.UniqueViolation:
             return 1  # User already exist
