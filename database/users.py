@@ -19,7 +19,6 @@ class User:
 
 def get_user(login):
     try:
-
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         with conn.cursor() as cursor:
