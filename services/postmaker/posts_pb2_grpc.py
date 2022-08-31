@@ -80,12 +80,45 @@ class postGetterStub(object):
                 request_serializer=posts__pb2.GetPostRequest.SerializeToString,
                 response_deserializer=posts__pb2.GetPostResponse.FromString,
                 )
+        self.GetPostPaginated = channel.unary_unary(
+                '/posts.postGetter/GetPostPaginated',
+                request_serializer=posts__pb2.GetPostRequest.SerializeToString,
+                response_deserializer=posts__pb2.GetPostPaginatedResponse.FromString,
+                )
+        self.GetFirstPostId = channel.unary_unary(
+                '/posts.postGetter/GetFirstPostId',
+                request_serializer=posts__pb2.GetFirstPostIdRequest.SerializeToString,
+                response_deserializer=posts__pb2.GetFirstPostIdResponse.FromString,
+                )
+        self.CheckPostId = channel.unary_unary(
+                '/posts.postGetter/CheckPostId',
+                request_serializer=posts__pb2.CheckPostIdRequest.SerializeToString,
+                response_deserializer=posts__pb2.CheckPostIdResponse.FromString,
+                )
 
 
 class postGetterServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def getPost(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPostPaginated(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetFirstPostId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CheckPostId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -98,6 +131,21 @@ def add_postGetterServicer_to_server(servicer, server):
                     servicer.getPost,
                     request_deserializer=posts__pb2.GetPostRequest.FromString,
                     response_serializer=posts__pb2.GetPostResponse.SerializeToString,
+            ),
+            'GetPostPaginated': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPostPaginated,
+                    request_deserializer=posts__pb2.GetPostRequest.FromString,
+                    response_serializer=posts__pb2.GetPostPaginatedResponse.SerializeToString,
+            ),
+            'GetFirstPostId': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetFirstPostId,
+                    request_deserializer=posts__pb2.GetFirstPostIdRequest.FromString,
+                    response_serializer=posts__pb2.GetFirstPostIdResponse.SerializeToString,
+            ),
+            'CheckPostId': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckPostId,
+                    request_deserializer=posts__pb2.CheckPostIdRequest.FromString,
+                    response_serializer=posts__pb2.CheckPostIdResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -123,5 +171,56 @@ class postGetter(object):
         return grpc.experimental.unary_unary(request, target, '/posts.postGetter/getPost',
             posts__pb2.GetPostRequest.SerializeToString,
             posts__pb2.GetPostResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetPostPaginated(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/posts.postGetter/GetPostPaginated',
+            posts__pb2.GetPostRequest.SerializeToString,
+            posts__pb2.GetPostPaginatedResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetFirstPostId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/posts.postGetter/GetFirstPostId',
+            posts__pb2.GetFirstPostIdRequest.SerializeToString,
+            posts__pb2.GetFirstPostIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CheckPostId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/posts.postGetter/CheckPostId',
+            posts__pb2.CheckPostIdRequest.SerializeToString,
+            posts__pb2.CheckPostIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

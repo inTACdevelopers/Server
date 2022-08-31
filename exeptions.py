@@ -15,3 +15,10 @@ class UserAlreadyExistsExeption(Exception):
     def __init__(self, login):
         self.message = f"Sorry, but user with login '{login}' already exists"
         super().__init__(self.message)
+
+
+class EmptyScrollExeption(Exception):
+
+    def __init__(self):
+        self.message = "empty scroll"
+        super().__init__(self.message)
