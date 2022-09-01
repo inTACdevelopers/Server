@@ -21,6 +21,7 @@ class Post():
 
 
 def make_post(title, desrc, contact, user, photo_bytes, file_name):
+
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -66,7 +67,7 @@ def get_post(post_id):
             post_data = cursor.fetchone()
             path = post_data[5]
 
-            path = path.replace('/home/ivan', os.getcwd())
+
 
             if path is not None:
                 with open(path, "rb") as file:
@@ -96,7 +97,7 @@ def get_posts_paginated(curr_id, limint):
             for item in posts_data:
                 path = item[5]
 
-                path = path.replace('/home/ivan', os.getcwd())
+
 
                 with open(path, "rb") as file:
                     post = Post(id=item[0], title=item[1], descr=item[2], contact=item[3],
