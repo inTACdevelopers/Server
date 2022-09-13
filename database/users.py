@@ -44,6 +44,7 @@ def get_user_by_login_password(login, password):
             cursor.execute(f"SELECT * FROM users WHERE login='{login}' AND password='{password}'")
 
             user_data = cursor.fetchone()
+
             if user_data is not None:
                 user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
                 user.id = user_data[0]

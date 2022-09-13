@@ -44,17 +44,17 @@ class PostGetter(pb2_grpc.postGetterServicer):
         return post_get_response
 
     def GetPostPaginated(self, request, context):
-        print("get post pagination request")
+        print(f"get post pagination request post_id == {request.post_id}")
 
         arr = get_posts_paginated(request.post_id, 4)
 
         get_posts_paginated_response = pb2.GetPostPaginatedResponse()
         posts = []
-        if arr is not None or request.post_id >= get_first_post_id():
+        if arr is not None or request.post_id >= get_first_post()[0]:
 
             if type(arr) is int and arr == 1:
                 post = pb2.GetPostResponse()
-                it = get_post(get_first_post_id())
+                it = get_post(get_first_post()[0])
 
                 post.post_id = it.id
                 post.post_title = it.title
@@ -63,12 +63,10 @@ class PostGetter(pb2_grpc.postGetterServicer):
                 post.seller_contact = it.seller_contact
                 post.creation_time = it.creation_date
                 post.user_id = it.from_user
-                post.state = "OK"
-                post.code = 0
+                post.state = "Empty"
+                post.code = 3
                 posts.append(post)
                 get_posts_paginated_response.posts.extend(posts)
-
-
                 return get_posts_paginated_response
             elif type(arr) is not int:
 
@@ -91,7 +89,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
             if type(arr) is int and arr == 2:
                 post.state = "Server Error (#db)"
                 post.code = 1
-            elif request.post_id > get_first_post_id():
+            elif request.post_id > get_first_post()[0]:
                 post.state = "Incorrect Post Id (#server)"
                 post.code = 2
 
@@ -102,19 +100,20 @@ class PostGetter(pb2_grpc.postGetterServicer):
         return get_posts_paginated_response
 
     def GetFirstPostId(self, request, context):
-        print("Get First Post Id request")
 
         get_first_id_response = pb2.GetFirstPostIdResponse()
+        print("get first post id request")
 
-        get_first_id_response.first_post_id = get_first_post_id()
+        data = get_first_post()
 
-        if get_first_id_response.first_post_id == None:
-            get_first_id_response.state = "Server Error (#db)"
-            get_first_id_response.code = 1
-        else:
+        if data != None:
+            get_first_id_response.first_post_id = data[0]
             get_first_id_response.state = "OK"
             get_first_id_response.code = 0
+        else:
 
+            get_first_id_response.state = "Server Error (#db)"
+            get_first_id_response.code = 1
 
 
         return get_first_id_response

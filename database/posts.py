@@ -88,14 +88,17 @@ def get_posts_paginated(curr_id, limint):
         out_posts = []
 
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM posts WHERE id >= {curr_id} LIMIT {limint}")
+
+            cursor.execute(f"SELECT * FROM posts WHERE id >= {curr_id} ORDER BY id LIMIT {limint}")
             posts_data = cursor.fetchall()
 
+            
             if posts_data == []:
                 raise EmptyScrollExeption()
 
             for item in posts_data:
                 path = item[5]
+                print(item[0])
 
 
 
@@ -116,13 +119,15 @@ def get_posts_paginated(curr_id, limint):
         conn.close()
 
 
-def get_first_post_id():
+def get_first_post():
     try:
 
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM posts LIMIT 1")
-            return int(cursor.fetchone()[0])
+            cursor.execute("SELECT * FROM posts ORDER BY id LIMIT 1")
+            data= cursor.fetchone()
+
+            return data
     except Exception as ex:
         print(ex)
         return None
@@ -130,4 +135,20 @@ def get_first_post_id():
         conn.close()
 
 
+def remove():
+    try:
+
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM posts WHERE id > 0")
+            cursor.execute("ALTER SEQUENCE posts_id_seq RESTART WITH 1")
+            print(cursor.fetchone())
+        conn.autocommit = False
+    except Exception as ex:
+        print(ex)
+
+    finally:
+        conn.close()
 
