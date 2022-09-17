@@ -46,26 +46,32 @@ class PostGetter(pb2_grpc.postGetterServicer):
     def GetPostPaginated(self, request, context):
         print(f"get post pagination request post_id == {request.post_id}")
 
-        arr = get_posts_paginated(request.post_id, 4)
+        arr = get_posts_paginated(request.post_id, request.limit)
 
         get_posts_paginated_response = pb2.GetPostPaginatedResponse()
         posts = []
         if arr is not None or request.post_id >= get_first_post()[0]:
 
             if type(arr) is int and arr == 1:
-                post = pb2.GetPostResponse()
-                it = get_post(get_first_post()[0])
 
-                post.post_id = it.id
-                post.post_title = it.title
-                post.photo_bytes = it.photo_bytes
-                post.post_description = it.descr
-                post.seller_contact = it.seller_contact
-                post.creation_time = it.creation_date
-                post.user_id = it.from_user
-                post.state = "Empty"
-                post.code = 3
-                posts.append(post)
+                arr= get_posts_paginated(get_first_post()[0], request.limit)
+
+                for item in arr:
+                    post = pb2.GetPostResponse()
+
+
+                    post.post_id = item.id
+                    post.post_title = item.title
+                    post.photo_bytes = item.photo_bytes
+                    post.post_description = item.descr
+                    post.seller_contact = item.seller_contact
+                    post.creation_time = item.creation_date
+                    post.user_id = item.from_user
+
+                    posts.append(post)
+                    post.state = "Empty"
+                    post.code = 3
+
                 get_posts_paginated_response.posts.extend(posts)
                 return get_posts_paginated_response
             elif type(arr) is not int:

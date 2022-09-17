@@ -1,5 +1,6 @@
 import datetime
 import os.path
+import time
 
 from config import *
 
@@ -21,7 +22,6 @@ class Post():
 
 
 def make_post(title, desrc, contact, user, photo_bytes, file_name):
-
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -67,8 +67,6 @@ def get_post(post_id):
             post_data = cursor.fetchone()
             path = post_data[5]
 
-
-
             if path is not None:
                 with open(path, "rb") as file:
                     return Post(id=post_id, title=post_data[1], descr=post_data[2], contact=post_data[3],
@@ -82,30 +80,32 @@ def get_post(post_id):
         conn.close()
 
 
-def get_posts_paginated(curr_id, limint):
+def get_posts_paginated(curr_id, limit):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
 
         with conn.cursor() as cursor:
 
-            cursor.execute(f"SELECT * FROM posts WHERE id >= {curr_id} ORDER BY id LIMIT {limint}")
+            cursor.execute(f"SELECT * FROM posts WHERE id >= {curr_id} ORDER BY id LIMIT {limit}")
             posts_data = cursor.fetchall()
 
-            
             if posts_data == []:
                 raise EmptyScrollExeption()
 
             for item in posts_data:
                 path = item[5]
-                print(item[0])
 
+
+
+                if DEBAG:
+                    path = path.replace('/home/ivan/database/photos/', DEBAG_PHOTO_DIR)
 
 
                 with open(path, "rb") as file:
                     post = Post(id=item[0], title=item[1], descr=item[2], contact=item[3],
                                 user=item[4], bytes=file.read(), time=item[6])
-                out_posts.append(post)
+                    out_posts.append(post)
         return out_posts
 
     except EmptyScrollExeption as ex:
@@ -125,7 +125,7 @@ def get_first_post():
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         with conn.cursor() as cursor:
             cursor.execute("SELECT * FROM posts ORDER BY id LIMIT 1")
-            data= cursor.fetchone()
+            data = cursor.fetchone()
 
             return data
     except Exception as ex:
@@ -151,4 +151,3 @@ def remove():
 
     finally:
         conn.close()
-

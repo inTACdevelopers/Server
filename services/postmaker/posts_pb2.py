@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bposts.proto\x12\x05posts\"\x90\x01\n\x0fmakePostRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x13\n\x0bphoto_bytes\x18\x02 \x01(\x0c\x12\x12\n\npost_title\x18\x03 \x01(\t\x12\x18\n\x10post_description\x18\x04 \x01(\t\x12\x16\n\x0eseller_contact\x18\x05 \x01(\t\x12\x0f\n\x07user_id\x18\x06 \x01(\x03\"/\n\x10makePostResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\"!\n\x0eGetPostRequest\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\"\xc2\x01\n\x0fGetPostResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x13\n\x0bphoto_bytes\x18\x03 \x01(\x0c\x12\x12\n\npost_title\x18\x04 \x01(\t\x12\x18\n\x10post_description\x18\x05 \x01(\t\x12\x16\n\x0eseller_contact\x18\x06 \x01(\t\x12\x15\n\rcreation_time\x18\x07 \x01(\t\x12\x0f\n\x07post_id\x18\x08 \x01(\x05\x12\x0f\n\x07user_id\x18\t \x01(\x03\"A\n\x18GetPostPaginatedResponse\x12%\n\x05posts\x18\x01 \x03(\x0b\x32\x16.posts.GetPostResponse\"\x17\n\x15GetFirstPostIdRequest\"L\n\x16GetFirstPostIdResponse\x12\x15\n\rfirst_post_id\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x0c\n\x04\x63ode\x18\x03 \x01(\x05\"%\n\x12\x43heckPostIdRequest\x12\x0f\n\x07post_id\x18\x01 \x01(\x05\"$\n\x13\x43heckPostIdResponse\x12\r\n\x05state\x18\x01 \x01(\x08\x32H\n\tpostMaker\x12;\n\x08makePost\x12\x16.posts.makePostRequest\x1a\x17.posts.makePostResponse2\xa7\x02\n\npostGetter\x12\x38\n\x07getPost\x12\x15.posts.GetPostRequest\x1a\x16.posts.GetPostResponse\x12J\n\x10GetPostPaginated\x12\x15.posts.GetPostRequest\x1a\x1f.posts.GetPostPaginatedResponse\x12M\n\x0eGetFirstPostId\x12\x1c.posts.GetFirstPostIdRequest\x1a\x1d.posts.GetFirstPostIdResponse\x12\x44\n\x0b\x43heckPostId\x12\x19.posts.CheckPostIdRequest\x1a\x1a.posts.CheckPostIdResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bposts.proto\x12\x05posts\"\x90\x01\n\x0fmakePostRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x13\n\x0bphoto_bytes\x18\x02 \x01(\x0c\x12\x12\n\npost_title\x18\x03 \x01(\t\x12\x18\n\x10post_description\x18\x04 \x01(\t\x12\x16\n\x0eseller_contact\x18\x05 \x01(\t\x12\x0f\n\x07user_id\x18\x06 \x01(\x03\"/\n\x10makePostResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\"0\n\x0eGetPostRequest\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\x12\r\n\x05limit\x18\x02 \x01(\x03\"\xc2\x01\n\x0fGetPostResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x13\n\x0bphoto_bytes\x18\x03 \x01(\x0c\x12\x12\n\npost_title\x18\x04 \x01(\t\x12\x18\n\x10post_description\x18\x05 \x01(\t\x12\x16\n\x0eseller_contact\x18\x06 \x01(\t\x12\x15\n\rcreation_time\x18\x07 \x01(\t\x12\x0f\n\x07post_id\x18\x08 \x01(\x05\x12\x0f\n\x07user_id\x18\t \x01(\x03\"A\n\x18GetPostPaginatedResponse\x12%\n\x05posts\x18\x01 \x03(\x0b\x32\x16.posts.GetPostResponse\"\x17\n\x15GetFirstPostIdRequest\"L\n\x16GetFirstPostIdResponse\x12\x15\n\rfirst_post_id\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x0c\n\x04\x63ode\x18\x03 \x01(\x05\"%\n\x12\x43heckPostIdRequest\x12\x0f\n\x07post_id\x18\x01 \x01(\x05\"$\n\x13\x43heckPostIdResponse\x12\r\n\x05state\x18\x01 \x01(\x08\x32H\n\tpostMaker\x12;\n\x08makePost\x12\x16.posts.makePostRequest\x1a\x17.posts.makePostResponse2\xa7\x02\n\npostGetter\x12\x38\n\x07getPost\x12\x15.posts.GetPostRequest\x1a\x16.posts.GetPostResponse\x12J\n\x10GetPostPaginated\x12\x15.posts.GetPostRequest\x1a\x1f.posts.GetPostPaginatedResponse\x12M\n\x0eGetFirstPostId\x12\x1c.posts.GetFirstPostIdRequest\x1a\x1d.posts.GetFirstPostIdResponse\x12\x44\n\x0b\x43heckPostId\x12\x19.posts.CheckPostIdRequest\x1a\x1a.posts.CheckPostIdResponseb\x06proto3')
 
 
 
@@ -100,21 +100,21 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _MAKEPOSTRESPONSE._serialized_start=169
   _MAKEPOSTRESPONSE._serialized_end=216
   _GETPOSTREQUEST._serialized_start=218
-  _GETPOSTREQUEST._serialized_end=251
-  _GETPOSTRESPONSE._serialized_start=254
-  _GETPOSTRESPONSE._serialized_end=448
-  _GETPOSTPAGINATEDRESPONSE._serialized_start=450
-  _GETPOSTPAGINATEDRESPONSE._serialized_end=515
-  _GETFIRSTPOSTIDREQUEST._serialized_start=517
-  _GETFIRSTPOSTIDREQUEST._serialized_end=540
-  _GETFIRSTPOSTIDRESPONSE._serialized_start=542
-  _GETFIRSTPOSTIDRESPONSE._serialized_end=618
-  _CHECKPOSTIDREQUEST._serialized_start=620
-  _CHECKPOSTIDREQUEST._serialized_end=657
-  _CHECKPOSTIDRESPONSE._serialized_start=659
-  _CHECKPOSTIDRESPONSE._serialized_end=695
-  _POSTMAKER._serialized_start=697
-  _POSTMAKER._serialized_end=769
-  _POSTGETTER._serialized_start=772
-  _POSTGETTER._serialized_end=1067
+  _GETPOSTREQUEST._serialized_end=266
+  _GETPOSTRESPONSE._serialized_start=269
+  _GETPOSTRESPONSE._serialized_end=463
+  _GETPOSTPAGINATEDRESPONSE._serialized_start=465
+  _GETPOSTPAGINATEDRESPONSE._serialized_end=530
+  _GETFIRSTPOSTIDREQUEST._serialized_start=532
+  _GETFIRSTPOSTIDREQUEST._serialized_end=555
+  _GETFIRSTPOSTIDRESPONSE._serialized_start=557
+  _GETFIRSTPOSTIDRESPONSE._serialized_end=633
+  _CHECKPOSTIDREQUEST._serialized_start=635
+  _CHECKPOSTIDREQUEST._serialized_end=672
+  _CHECKPOSTIDRESPONSE._serialized_start=674
+  _CHECKPOSTIDRESPONSE._serialized_end=710
+  _POSTMAKER._serialized_start=712
+  _POSTMAKER._serialized_end=784
+  _POSTGETTER._serialized_start=787
+  _POSTGETTER._serialized_end=1082
 # @@protoc_insertion_point(module_scope)
