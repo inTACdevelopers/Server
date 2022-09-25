@@ -6,16 +6,13 @@ import json
 reqinfo = ["name", "company", "url", "platform", "version", "agency", "email"]
 
 
-def getyml() -> str:
-    url = "https://anbik.ru/yml/YML_new.xml"
+def getyml(url) -> bytes:
     response =  requests.get(url)
-    with open("yml_anbik.xml", "wb") as f:
-        f.write(response.content)
-    xmlfile = 'yml_anbik.xml'
-    return xmlfile
+
+    return response.content
 
 
-def parse_shopinfo_yml(xmlfile):
+def parse_shopinfo_yml(xml):
     data = {}
     arrdel = []
     arrpick = []
@@ -23,8 +20,10 @@ def parse_shopinfo_yml(xmlfile):
     categories = {}
     delivery = "None"
     pickup = "None"
-    tree = ET.parse(xmlfile)
+
+    tree = ET.parse(xml)
     root = tree.getroot()
+
     data["date"] = root.attrib.get("date")
 
     for item in reqinfo:
@@ -85,8 +84,8 @@ def parse_shopinfo_yml(xmlfile):
     return data
 
 
-def parse_offersinfo_yml(xmlfile):
-    tree = ET.parse(xmlfile)
+def parse_offersinfo_yml(xml):
+    tree = ET.parse(xml)
     root = tree.getroot()
     arr = ['delivery-options', 'pickup-options', 'param']
     offers = []

@@ -9,7 +9,7 @@ class PostMakeServise(pb2_grpc.postMakerServicer):
         make_post_response = pb2.makePostResponse()
 
         code = make_post(request.post_title, request.post_description, request.seller_contact, request.user_id,
-                         request.photo_bytes, request.file_name)
+                         request.photo_bytes)
 
         make_post_response.code = code
 
@@ -44,21 +44,20 @@ class PostGetter(pb2_grpc.postGetterServicer):
         return post_get_response
 
     def GetPostPaginated(self, request, context):
-        print(f"get post pagination request post_id == {request.post_id}")
+        print(f"get post pagination request w(p)=={request.weight}")
 
-        arr = get_posts_paginated(request.post_id, request.limit)
+        arr = get_posts_paginated(request.weight, request.limit)
 
         get_posts_paginated_response = pb2.GetPostPaginatedResponse()
         posts = []
-        if arr is not None or request.post_id >= get_first_post()[0]:
+        if arr is not None:
 
             if type(arr) is int and arr == 1:
 
-                arr= get_posts_paginated(get_first_post()[0], request.limit)
+                arr = get_posts_paginated(get_first_post()[8]+1, request.limit)
 
                 for item in arr:
                     post = pb2.GetPostResponse()
-
 
                     post.post_id = item.id
                     post.post_title = item.title
@@ -67,6 +66,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
                     post.seller_contact = item.seller_contact
                     post.creation_time = item.creation_date
                     post.user_id = item.from_user
+                    post.weight = item.weight
 
                     posts.append(post)
                     post.state = "Empty"
@@ -86,6 +86,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
                     post.seller_contact = item.seller_contact
                     post.creation_time = item.creation_date
                     post.user_id = item.from_user
+                    post.weight = item.weight
                     post.state = "OK"
                     post.code = 0
 
@@ -113,7 +114,8 @@ class PostGetter(pb2_grpc.postGetterServicer):
         data = get_first_post()
 
         if data != None:
-            get_first_id_response.first_post_id = data[0]
+            get_first_id_response.weight = data[8] + 1
+
             get_first_id_response.state = "OK"
             get_first_id_response.code = 0
         else:
@@ -121,5 +123,25 @@ class PostGetter(pb2_grpc.postGetterServicer):
             get_first_id_response.state = "Server Error (#db)"
             get_first_id_response.code = 1
 
-
         return get_first_id_response
+
+
+class PostLiker(pb2_grpc.LikePostServicer):
+    #TODO
+    # Здесь нужно обработать штуку с изменением веса поста
+    # Так же вес поста меняется исключительно на сервере.
+    def SendLike(self, request, context):
+        print(f"Send Like request post:{request.post_id} from:{request.from_user}")
+
+        response = pb2.LikePostResponse()
+        response.code = likePost(request.post_id)
+
+        if response.code == 0:
+            response.state = "OK"
+        else:
+            response.state = "Server error"
+
+        return response
+
+    def UnLike(self, request, context):
+        pass

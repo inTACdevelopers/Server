@@ -19,13 +19,15 @@ class Post():
         self.file_path = ""
         self.creation_date = time
         self.photo_bytes = bytes
+        self.likes = 0
+        self.weight = 0
 
 
-def make_post(title, desrc, contact, user, photo_bytes, file_name):
+def make_post(title, desrc, contact, user, photo_bytes):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
-        server_file_title = str(hash(file_name + str(datetime.datetime.today()))) + ".JPEG"
+        server_file_title = str(hash("file_name" + str(datetime.datetime.today()))) + ".JPEG"
 
         conn.autocommit = True
 
@@ -80,14 +82,14 @@ def get_post(post_id):
         conn.close()
 
 
-def get_posts_paginated(curr_id, limit):
+def get_posts_paginated(last_weight, limit):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
 
         with conn.cursor() as cursor:
 
-            cursor.execute(f"SELECT * FROM posts WHERE id >= {curr_id} ORDER BY id LIMIT {limit}")
+            cursor.execute(f"SELECT * FROM posts WHERE weight < {last_weight} ORDER BY weight DESC LIMIT {limit}")
             posts_data = cursor.fetchall()
 
             if posts_data == []:
@@ -96,15 +98,13 @@ def get_posts_paginated(curr_id, limit):
             for item in posts_data:
                 path = item[5]
 
-
-
                 if DEBAG:
                     path = path.replace('/home/ivan/database/photos/', DEBAG_PHOTO_DIR)
-
 
                 with open(path, "rb") as file:
                     post = Post(id=item[0], title=item[1], descr=item[2], contact=item[3],
                                 user=item[4], bytes=file.read(), time=item[6])
+                    post.weight = item[8]
                     out_posts.append(post)
         return out_posts
 
@@ -124,7 +124,7 @@ def get_first_post():
 
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM posts ORDER BY id LIMIT 1")
+            cursor.execute("SELECT * FROM posts ORDER BY weight DESC LIMIT 1")
             data = cursor.fetchone()
 
             return data
@@ -135,7 +135,28 @@ def get_first_post():
         conn.close()
 
 
-def remove():
+# TODO
+# Сделай таблицу с лайками в нее после успешного лайка должен добавляться VALUES(like_id,user_id,post_id,seller_id)
+# Потом делай выборку, это будет надо для уведомлений о лайках и просмотра списка лайков
+def likePost(post_id: int):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        with conn.cursor() as cursor:
+            cursor.execute(f"UPDATE posts SET likes=likes + 1 WHERE id={post_id}")
+
+            conn.autocommit = False
+            return 0
+
+    except Exception as ex:
+        print(f"{ex} in likePost")
+        return 1
+    finally:
+        conn.close()
+
+
+def remove_all():
     try:
 
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
@@ -149,5 +170,25 @@ def remove():
     except Exception as ex:
         print(ex)
 
+    finally:
+        conn.close()
+
+
+def test():
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM posts WHERE id > 3 ORDER BY likes DESC LIMIT 3")
+            data = cursor.fetchall()
+            for item in data:
+                print(item[0], item[1])
+            conn.autocommit = False
+            return 0
+
+    except Exception as ex:
+        print(f"{ex} in likePost")
+        return 1
     finally:
         conn.close()

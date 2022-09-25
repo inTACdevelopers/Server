@@ -5,9 +5,11 @@ from concurrent import futures
 from services.authorizer import authorization_pb2_grpc
 from services.postmaker import posts_pb2_grpc
 from services.registrar import registration_pb2_grpc
+from services.YmlParser import yml_pb2_grpc
 from services.authorizer.autorizer import SingUpService
 from services.registrar.registrar import SingInService
-from services.postmaker.postmaker import PostMakeServise, PostGetter
+from services.postmaker.postmaker import PostMakeServise, PostGetter, PostLiker
+from services.YmlParser.ymlUploader import YmlUploaderServise
 
 from config import *
 
@@ -15,7 +17,7 @@ from config import *
 # python -m grpc_tools.protoc -I./protos --python_out=services/authorizer --grpc_python_out=services/authorizer protos/authorization.proto
 # python -m grpc_tools.protoc -I./protos --python_out=services/registrar --grpc_python_out=services/registrar protos/registration.proto
 # python -m grpc_tools.protoc -I./protos --python_out=services/postmaker --grpc_python_out=services/postmaker protos/posts.proto
-
+# python -m grpc_tools.protoc -I./protos --python_out=services/YmlParser --grpc_python_out=services/YmlParser protos/yml.proto
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
 
@@ -23,6 +25,8 @@ def serve():
     authorization_pb2_grpc.add_authorizerServicer_to_server(SingUpService(), server)
     posts_pb2_grpc.add_postMakerServicer_to_server(PostMakeServise(), server)
     posts_pb2_grpc.add_postGetterServicer_to_server(PostGetter(), server)
+    yml_pb2_grpc.add_YmlPostMakerServicer_to_server(YmlUploaderServise(),server)
+    posts_pb2_grpc.add_LikePostServicer_to_server(PostLiker(),server)
 
     connection = f'{SERVER_IP}:{SERVER_PORT}'
     if DEBAG:
