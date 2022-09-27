@@ -13,7 +13,8 @@ class YmlUploaderServise(pb2_grpc.YmlPostMakerServicer):
         response = pb2.UploadResponse()
 
         try:
-            for item in parse_offersinfo_yml(getyml(request.url)):
+            xml_file_name = getyml(request.url)
+            for item in parse_offersinfo_yml(xml_file_name):
                 for id in item.keys():
                     curr_good = item[id]
 
@@ -34,10 +35,12 @@ class YmlUploaderServise(pb2_grpc.YmlPostMakerServicer):
             response.code = 0
             response.state = "OK"
         except Exception as ex:
-            print(f"YmlUploaderServise -- UploadPosts")
+            print(f"Error YmlUploaderServise -- UploadPosts")
             print(ex)
             response.code = 1
             response.state = "Server error Try again"
         finally:
+            if os.path.exists(xml_file_name):
+                os.remove(xml_file_name)
             return response
 

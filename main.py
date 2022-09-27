@@ -6,5 +6,4 @@ from services.YmlParser.parser import *
 
 if __name__ == "__main__":
 
-    #print(get_posts_paginated(2,5))
     serve()

@@ -3,13 +3,19 @@ import requests
 import json
 
 # GLOBAL VARS
+from config import *
+
 reqinfo = ["name", "company", "url", "platform", "version", "agency", "email"]
 
 
-def getyml(url) -> bytes:
-    response =  requests.get(url)
+def getyml(url) -> str:
 
-    return response.content
+    response =  requests.get(url)
+    xml_file=f"{YML_DIR}/{hash(url)}.yml"
+    with open(xml_file, "wb") as f:
+        f.write(response.content)
+
+    return xml_file
 
 
 def parse_shopinfo_yml(xml):
@@ -108,29 +114,3 @@ def parse_offersinfo_yml(xml):
                 offers.append(offer)
     return offers
 
-
- # xml = getyml()
-    # for item in parse_offersinfo_yml(xml):
-    #     for id in item.keys():
-    #         curr_good = item[id]
-    #         title = ''
-    #         descr = ''
-    #         contact = ''
-    #         photo = b''
-    #         if 'name' in curr_good.keys():
-    #             title = curr_good['name']
-    #         else:
-    #             title = curr_good['typePrefix'] + " " + curr_good['vendor'] + " " + curr_good['model']
-    #
-    #         descr = curr_good['description']
-    #
-    #         contact = curr_good['url']
-    #         image = curr_good['picture']
-    #         if len(descr) > 50:
-    #             descr = descr[:50] + "..."
-    #         response = requests.get(image, stream=True)
-    #         photo = BytesIO(response.content).read()
-    #
-    #         make_post(title, descr, contact, 17, photo, "1")
-    #     break
-    # print(get_first_post_id())
