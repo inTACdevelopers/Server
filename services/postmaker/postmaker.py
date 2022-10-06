@@ -46,7 +46,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
     def GetPostPaginated(self, request, context):
         print(f"get post pagination request w(p)=={request.weight}")
 
-        arr = get_posts_paginated(request.weight, request.limit)
+        arr = get_posts_paginated(request.weight, request.limit, request.session_name)
 
         get_posts_paginated_response = pb2.GetPostPaginatedResponse()
         posts = []
@@ -54,7 +54,8 @@ class PostGetter(pb2_grpc.postGetterServicer):
 
             if type(arr) is int and arr == 1:
 
-                arr = get_posts_paginated(get_first_post()[8]+1, request.limit)
+                arr = get_posts_paginated(get_first_post(request.session_name)[8] + 1, request.limit,
+                                          request.session_name)
 
                 for item in arr:
                     post = pb2.GetPostResponse()
@@ -96,7 +97,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
             if type(arr) is int and arr == 2:
                 post.state = "Server Error (#db)"
                 post.code = 1
-            elif request.post_id > get_first_post()[0]:
+            elif request.post_id > get_first_post(request.session_name)[0]:
                 post.state = "Incorrect Post Id (#server)"
                 post.code = 2
 
@@ -111,7 +112,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
         get_first_id_response = pb2.GetFirstPostIdResponse()
         print("get first post id request")
 
-        data = get_first_post()
+        data = get_first_post(request.session_name)
 
         if data != None:
             get_first_id_response.weight = data[8] + 1
@@ -127,7 +128,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
 
 
 class PostLiker(pb2_grpc.LikePostServicer):
-    #TODO
+    # TODO
     # Здесь нужно обработать штуку с изменением веса поста
     # Так же вес поста меняется исключительно на сервере.
     def SendLike(self, request, context):

@@ -82,14 +82,15 @@ def get_post(post_id):
         conn.close()
 
 
-def get_posts_paginated(last_weight, limit):
+def get_posts_paginated(last_weight, limit, session_name):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
 
         with conn.cursor() as cursor:
 
-            cursor.execute(f"SELECT * FROM posts WHERE weight < {last_weight} ORDER BY weight DESC LIMIT {limit}")
+            cursor.execute(
+                f"SELECT * FROM post_session_{session_name} WHERE weight < {last_weight} ORDER BY weight DESC LIMIT {limit}")
             posts_data = cursor.fetchall()
 
             if posts_data == []:
@@ -119,12 +120,12 @@ def get_posts_paginated(last_weight, limit):
         conn.close()
 
 
-def get_first_post():
+def get_first_post(session_name):
     try:
 
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM posts ORDER BY weight DESC LIMIT 1")
+            cursor.execute(f"SELECT * FROM post_session_{session_name} ORDER BY weight DESC LIMIT 1")
             data = cursor.fetchone()
 
             return data
@@ -136,8 +137,8 @@ def get_first_post():
 
 
 # TODO
-# Сделай таблицу с лайками в нее после успешного лайка должен добавляться VALUES(like_id,user_id,post_id,seller_id)
-# Потом делай выборку, это будет надо для уведомлений о лайках и просмотра списка лайков
+#  Сделай таблицу с лайками в нее после успешного лайка должен добавляться VALUES(like_id,user_id,post_id,seller_id)
+#  Потом делай выборку, это будет надо для уведомлений о лайках и просмотра списка лайков
 def likePost(post_id: int):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
@@ -170,25 +171,5 @@ def remove_all():
     except Exception as ex:
         print(ex)
 
-    finally:
-        conn.close()
-
-
-def test():
-    try:
-        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
-
-        conn.autocommit = True
-        with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM posts WHERE id > 3 ORDER BY likes DESC LIMIT 3")
-            data = cursor.fetchall()
-            for item in data:
-                print(item[0], item[1])
-            conn.autocommit = False
-            return 0
-
-    except Exception as ex:
-        print(f"{ex} in likePost")
-        return 1
     finally:
         conn.close()

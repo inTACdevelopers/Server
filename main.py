@@ -1,4 +1,5 @@
-from database.posts import get_posts_paginated, test
+
+from database.users import create_user_post_session, drop_user_post_session
 from server import serve
 from parser import *
 

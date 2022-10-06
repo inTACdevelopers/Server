@@ -63,6 +63,9 @@ def check_company_exist(company):
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         with conn.cursor() as cursor:
+
+            if company == None or company == '':
+                return False
             cursor.execute(f"SELECT * FROM users WHERE company='{company}'")
 
             return cursor.fetchone() is not None
@@ -74,14 +77,14 @@ def check_company_exist(company):
         conn.close()
 
 
-def new_user(login, password, name, surname, birth, company=None, ):
+def new_user(login, password, name, surname, birth, company=None):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         conn.autocommit = True
         try:
             with conn.cursor() as cursor:
-                if company is not None and check_company_exist(company):
+                if check_company_exist(company):
                     raise CompanyExistException(company)
                 cursor.execute(
                     f"INSERT INTO users (login,password,surname,name,company,birth_date) VALUES('{login}','{password}',"
@@ -96,5 +99,41 @@ def new_user(login, password, name, surname, birth, company=None, ):
         print("There was some errors while working with database")
         print(ex)
         return 3  # Error with database
+    finally:
+        conn.close()
+
+def create_user_post_session(session_name):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"CREATE TABLE post_session_{session_name} "
+                           f"AS SELECT * FROM posts ORDER BY weight DESC LIMIT 500")
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("There was some errors while working with database")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
+def drop_user_post_session(session_name):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"DROP TABLE post_session_{session_name}")
+
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("There was some errors while working with database")
+        print(ex)
+        return 1  # Error with database
     finally:
         conn.close()
