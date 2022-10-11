@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0esessions.proto\x12\x08sessions\"+\n\x18\x43reatePostSessionRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\"N\n\x19\x43reatePostSessionResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x14\n\x0csession_name\x18\x03 \x01(\t\"%\n\x12\x44ropSessionRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\"2\n\x13\x44ropSessionResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t2\xc3\x01\n\x13postSessionsService\x12\\\n\x11\x43reatePostSession\x12\".sessions.CreatePostSessionRequest\x1a#.sessions.CreatePostSessionResponse\x12N\n\x0f\x44ropPostSession\x12\x1c.sessions.DropSessionRequest\x1a\x1d.sessions.DropSessionResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0esessions.proto\x12\x08sessions\"+\n\x18\x43reatePostSessionRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x03\"N\n\x19\x43reatePostSessionResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t\x12\x14\n\x0csession_name\x18\x03 \x01(\t\"*\n\x12\x44ropSessionRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\"2\n\x13\x44ropSessionResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05state\x18\x02 \x01(\t2\xc3\x01\n\x13postSessionsService\x12\\\n\x11\x43reatePostSession\x12\".sessions.CreatePostSessionRequest\x1a#.sessions.CreatePostSessionResponse\x12N\n\x0f\x44ropPostSession\x12\x1c.sessions.DropSessionRequest\x1a\x1d.sessions.DropSessionResponseb\x06proto3')
 
 
 
@@ -59,9 +59,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _CREATEPOSTSESSIONRESPONSE._serialized_start=73
   _CREATEPOSTSESSIONRESPONSE._serialized_end=151
   _DROPSESSIONREQUEST._serialized_start=153
-  _DROPSESSIONREQUEST._serialized_end=190
-  _DROPSESSIONRESPONSE._serialized_start=192
-  _DROPSESSIONRESPONSE._serialized_end=242
-  _POSTSESSIONSSERVICE._serialized_start=245
-  _POSTSESSIONSSERVICE._serialized_end=440
+  _DROPSESSIONREQUEST._serialized_end=195
+  _DROPSESSIONRESPONSE._serialized_start=197
+  _DROPSESSIONRESPONSE._serialized_end=247
+  _POSTSESSIONSSERVICE._serialized_start=250
+  _POSTSESSIONSSERVICE._serialized_end=445
 # @@protoc_insertion_point(module_scope)

@@ -25,7 +25,7 @@ class SessionService(pb2_grpc.postSessionsServiceServicer):
     def DropPostSession(self, request, context):
         print("Drop Session Request")
 
-        code = drop_user_post_session(str(abs(str(request.user_id).__hash__())))
+        code = drop_user_post_session(request.session_name)
 
         session_response = pb2.DropSessionResponse()
 
