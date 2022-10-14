@@ -58,6 +58,28 @@ def get_user_by_login_password(login, password):
         conn.close()
 
 
+def get_user_by_token(token: str):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM users WHERE token = '{token}'")
+
+            user_data = cursor.fetchone()
+
+            if user_data is not None:
+                user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
+                user.id = user_data[0]
+                return user
+            else:
+                return None
+    except Exception as ex:
+        print("There was some errors while working with database")
+        print(ex)
+    finally:
+        conn.close()
+
+
 def check_company_exist(company):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
@@ -77,7 +99,7 @@ def check_company_exist(company):
         conn.close()
 
 
-def new_user(login, password, name, surname, birth, company=None):
+def new_user(login, password, name, surname, birth, token, company=None):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -87,8 +109,8 @@ def new_user(login, password, name, surname, birth, company=None):
                 if check_company_exist(company):
                     raise CompanyExistException(company)
                 cursor.execute(
-                    f"INSERT INTO users (login,password,surname,name,company,birth_date) VALUES('{login}','{password}',"
-                    f"'{surname}','{name}','{company}','{birth}')")
+                    f"INSERT INTO users (login,password,surname,name,company,birth_date,token) VALUES('{login}','{password}',"
+                    f"'{surname}','{name}','{company}','{birth}','{token}')")
                 return 0  # OK
         except exceptions.UniqueViolation:
             return 1  # User already exist
@@ -101,6 +123,7 @@ def new_user(login, password, name, surname, birth, company=None):
         return 3  # Error with database
     finally:
         conn.close()
+
 
 def create_user_post_session(session_name):
     try:
@@ -119,6 +142,7 @@ def create_user_post_session(session_name):
         return 1  # Error with database
     finally:
         conn.close()
+
 
 def drop_user_post_session(session_name):
     try:
