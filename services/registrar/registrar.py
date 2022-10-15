@@ -10,10 +10,12 @@ class SingInService(pb2_grpc.registrarServicer):
 
         sing_in_response = pb2.SingInResponse()
 
-        sha512_token = str(hashlib.sha512(request.token))
+        hash = hashlib.sha256()
+        hash.update(request.token)
+        token = hash.hexdigest()
 
         sing_in_response.code = new_user(request.login, request.password, request.surname, request.name,
-                                         request.birth_date, sha512_token, request.company)
+                                         request.birth_date, token, request.company)
 
         if sing_in_response.code == 0:
             sing_in_response.state = "OK"

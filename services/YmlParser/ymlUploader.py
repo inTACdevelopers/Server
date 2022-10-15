@@ -2,7 +2,7 @@ from io import BytesIO
 
 import services.YmlParser.yml_pb2 as pb2
 import  services.YmlParser.yml_pb2_grpc as pb2_grpc
-from parser import *
+from services.YmlParser.parser import *
 from database.posts import *
 
 

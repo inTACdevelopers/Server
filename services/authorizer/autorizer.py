@@ -38,9 +38,11 @@ class SingUpService(pb2_grpc.authorizerServicer):
 
         sing_up_response = pb2.SingUpResponse()
 
-        sha512_token = str(hashlib.sha512(request.token))
+        hash = hashlib.sha256()
+        hash.update(request.token)
+        token = hash.hexdigest()
 
-        user = get_user_by_token(sha512_token)
+        user = get_user_by_token(token)
 
         if user is not None:
 
