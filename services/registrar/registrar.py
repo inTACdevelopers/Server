@@ -11,7 +11,7 @@ class SingInService(pb2_grpc.registrarServicer):
         sing_in_response = pb2.SingInResponse()
 
         hash = hashlib.sha256()
-        hash.update(request.token)
+        hash.update((request.login + request.password).encode())
         token = hash.hexdigest()
 
         sing_in_response.code = new_user(request.login, request.password, request.surname, request.name,
@@ -19,6 +19,16 @@ class SingInService(pb2_grpc.registrarServicer):
 
         if sing_in_response.code == 0:
             sing_in_response.state = "OK"
+
+            user = get_user(request.login)
+            if user is not None:
+                hash = hashlib.sha256()
+
+                hash.update(user.id.to_bytes(8,'big'))
+                sha_id = hash.hexdigest()
+                create_users_posts_table(sha_id)
+
+
         elif sing_in_response.code == 1:
             sing_in_response.state = "User already exist"
         elif sing_in_response.code == 2:

@@ -1,4 +1,5 @@
 import datetime
+import hashlib
 import os.path
 import time
 
@@ -23,7 +24,7 @@ class Post():
         self.weight = 0
 
 
-def make_post(title, desrc, contact, user, photo_bytes):
+def make_post(title:str, desrc:str, contact:str, user:int, photo_bytes):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -42,9 +43,19 @@ def make_post(title, desrc, contact, user, photo_bytes):
 
             server_file_title = dir + server_file_title
 
+
+            hash = hashlib.sha256()
+            hash.update(user.to_bytes(8,'big'))
+            sha256 = hash.hexdigest()
+
+
             with conn.cursor() as cursor:
                 cursor.execute(
                     "INSERT INTO posts (title,description,seller_contact,from_user,file_path,creation_time) VALUES("
+                    f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')")
+
+                cursor.execute(
+                    f"INSERT INTO user_posts_{sha256} (title,description,seller_contact,from_user,file_path,creation_time) VALUES("
                     f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')")
 
                 conn.autocommit = False
@@ -120,6 +131,37 @@ def get_posts_paginated(last_weight, limit, session_name):
         conn.close()
 
 
+def get_users_posts_paginated(last_id,limin,sha_256_id):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+        out_posts = []
+
+        with conn.cursor() as cursor:
+
+            cursor.execute(
+                f"SELECT * FROM user_posts_{sha_256_id} WHERE id > {last_id} ORDER BY weight DESC LIMIT {limit}")
+            posts_data = cursor.fetchall()
+
+            if posts_data == []:
+                raise EmptyScrollExeption()
+
+            for item in posts_data:
+                path = item[5]
+
+                if DEBAG:
+                    path = path.replace('/home/ivan/database/photos/', DEBAG_PHOTO_DIR)
+
+                with open(path, "rb") as file:
+                    post = Post(id=item[0], title=item[1], descr=item[2], contact=item[3],
+                                user=item[4], bytes=file.read(), time=item[6])
+                    post.weight = item[8]
+                    out_posts.append(post)
+        return out_posts
+
+
+    finally:
+        conn.close()
+
 def get_first_post(session_name):
     try:
 
@@ -133,7 +175,7 @@ def get_first_post(session_name):
         print(ex)
         return None
     finally:
-        conn.close()
+        conn.clos
 
 
 # TODO

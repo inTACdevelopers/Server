@@ -126,6 +126,20 @@ class PostGetter(pb2_grpc.postGetterServicer):
 
         return get_first_id_response
 
+    def GetUserPosts(self, request, context):
+        print(f'Get user post {request.user_id} id == {request.post_id}')
+
+        hash = hashlib.sha256()
+        hash.update(request.user_id.to_bytes(8, 'big'))
+        sha_256 = hash.hexdigest()
+
+        posts_array = get_users_posts_paginated(request.post_id, request.limit, sha_256)
+
+        get_user_post_response = pb2.GetPostPaginatedResponse()
+
+        #TODO
+        #Допрогай завтра логику выдачи постов для конкретного пользователя
+        #Это сейчас работа для личного кабинета
 
 class PostLiker(pb2_grpc.LikePostServicer):
     # TODO

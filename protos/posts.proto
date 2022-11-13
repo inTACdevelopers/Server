@@ -9,8 +9,8 @@ service postMaker{
 service postGetter{
   rpc getPost(GetPostRequest) returns(GetPostResponse);
   rpc GetPostPaginated(GetPostRequest) returns (GetPostPaginatedResponse);
+  rpc GetUserPosts(GetUserPostRequest) returns (GetPostPaginatedResponse);
   rpc GetFirstPostId (GetFirstPostIdRequest) returns (GetFirstPostIdResponse);
-  rpc CheckPostId (CheckPostIdRequest) returns (CheckPostIdResponse);
 }
 
 service LikePost{
@@ -41,6 +41,12 @@ message GetPostRequest{
   string session_name = 4;
 }
 
+message GetUserPostRequest{
+  int64 post_id = 1;
+  int64 limit = 2;
+  int64 user_id = 3;
+}
+
 message GetPostResponse{
   int32 code = 1;
   string state = 2;
@@ -67,13 +73,6 @@ message GetFirstPostIdResponse{
   string state = 2;
   int32 code = 3;
   double weight = 4;
-}
-
-message CheckPostIdRequest{
-  int32 post_id = 1;
-}
-message CheckPostIdResponse{
-  bool state = 1;
 }
 
 message LikePostRequest{

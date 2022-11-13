@@ -4,7 +4,8 @@ import psycopg2
 import psycopg2.errors as exceptions
 from exeptions import *
 
-
+#its a dataclass... shit
+#i need class methods...
 class User:
     def __init__(self, login, password, surname, name, company, birth):
         self.id = 0
@@ -161,3 +162,23 @@ def drop_user_post_session(session_name):
         return 1  # Error with database
     finally:
         conn.close()
+
+
+def create_users_posts_table(sha256_user_id):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"CREATE TABLE user_posts_{sha256_user_id} AS (SELECT * FROM posts) with no data")
+
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("There was some errors while working with database")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
