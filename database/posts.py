@@ -52,11 +52,11 @@ def make_post(title:str, desrc:str, contact:str, user:int, photo_bytes):
             with conn.cursor() as cursor:
                 cursor.execute(
                     "INSERT INTO posts (title,description,seller_contact,from_user,file_path,creation_time) VALUES("
-                    f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')")
+                    f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')--")
 
                 cursor.execute(
                     f"INSERT INTO user_posts_{sha256} (title,description,seller_contact,from_user,file_path,creation_time) VALUES("
-                    f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')")
+                    f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')--")
 
                 conn.autocommit = False
                 return 0
@@ -76,7 +76,7 @@ def get_post(post_id):
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM posts WHERE id={post_id}")
+            cursor.execute(f"SELECT * FROM posts WHERE id={post_id}--")
             post_data = cursor.fetchone()
             path = post_data[5]
 
@@ -101,7 +101,7 @@ def get_posts_paginated(last_weight, limit, session_name):
         with conn.cursor() as cursor:
 
             cursor.execute(
-                f"SELECT * FROM post_session_{session_name} WHERE weight < {last_weight} ORDER BY weight DESC LIMIT {limit}")
+                f"SELECT * FROM post_session_{session_name} WHERE weight < {last_weight} ORDER BY weight DESC LIMIT {limit}--")
             posts_data = cursor.fetchall()
 
             if posts_data == []:
@@ -139,7 +139,7 @@ def get_users_posts_paginated(last_id,limin,sha_256_id):
         with conn.cursor() as cursor:
 
             cursor.execute(
-                f"SELECT * FROM user_posts_{sha_256_id} WHERE id > {last_id} ORDER BY weight DESC LIMIT {limit}")
+                f"SELECT * FROM user_posts_{sha_256_id} WHERE id > {last_id} ORDER BY weight DESC LIMIT {limit}--")
             posts_data = cursor.fetchall()
 
             if posts_data == []:
@@ -167,7 +167,7 @@ def get_first_post(session_name):
 
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM post_session_{session_name} ORDER BY weight DESC LIMIT 1")
+            cursor.execute(f"SELECT * FROM post_session_{session_name} ORDER BY weight DESC LIMIT 1--")
             data = cursor.fetchone()
 
             return data
@@ -187,7 +187,7 @@ def likePost(post_id: int):
 
         conn.autocommit = True
         with conn.cursor() as cursor:
-            cursor.execute(f"UPDATE posts SET likes=likes + 1 WHERE id={post_id}")
+            cursor.execute(f"UPDATE posts SET likes=likes + 1 WHERE id={post_id}--")
 
             conn.autocommit = False
             return 0
@@ -206,8 +206,8 @@ def remove_all():
 
         conn.autocommit = True
         with conn.cursor() as cursor:
-            cursor.execute("DELETE FROM posts WHERE id > 0")
-            cursor.execute("ALTER SEQUENCE posts_id_seq RESTART WITH 1")
+            cursor.execute("DELETE FROM posts WHERE id > 0--")
+            cursor.execute("ALTER SEQUENCE posts_id_seq RESTART WITH 1--")
             print(cursor.fetchone())
         conn.autocommit = False
     except Exception as ex:

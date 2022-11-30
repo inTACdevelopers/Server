@@ -23,7 +23,7 @@ def get_user(login):
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM users WHERE login='{login}'")
+            cursor.execute(f"SELECT * FROM users WHERE login='{login}'--")
 
             user_data = cursor.fetchone()
             if user_data is not None:
@@ -42,7 +42,7 @@ def get_user_by_login_password(login, password):
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM users WHERE login='{login}' AND password='{password}'")
+            cursor.execute(f"SELECT * FROM users WHERE login='{login}' AND password='{password}'--")
 
             user_data = cursor.fetchone()
 
@@ -64,7 +64,7 @@ def get_user_by_token(token: str):
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM users WHERE token = '{token}'")
+            cursor.execute(f"SELECT * FROM users WHERE token = '{token}'--")
 
             user_data = cursor.fetchone()
 
@@ -89,7 +89,7 @@ def check_company_exist(company):
 
             if company == None or company == '':
                 return False
-            cursor.execute(f"SELECT * FROM users WHERE company='{company}'")
+            cursor.execute(f"SELECT * FROM users WHERE company='{company}'--")
 
             return cursor.fetchone() is not None
 
@@ -111,7 +111,7 @@ def new_user(login, password, name, surname, birth, token, company=None):
                     raise CompanyExistException(company)
                 cursor.execute(
                     f"INSERT INTO users (login,password,surname,name,company,birth_date,token) VALUES('{login}','{password}',"
-                    f"'{surname}','{name}','{company}','{birth}','{token}')")
+                    f"'{surname}','{name}','{company}','{birth}','{token}')--")
                 return 0  # OK
         except exceptions.UniqueViolation:
             return 1  # User already exist
@@ -134,7 +134,7 @@ def create_user_post_session(session_name):
 
         with conn.cursor() as cursor:
             cursor.execute(f"CREATE TABLE post_session_{session_name} "
-                           f"AS SELECT * FROM posts ORDER BY weight DESC LIMIT 500")
+                           f"AS SELECT * FROM posts ORDER BY weight DESC LIMIT 500--")
         conn.autocommit = False
         return 0
     except Exception as ex:
@@ -152,7 +152,7 @@ def drop_user_post_session(session_name):
         conn.autocommit = True
 
         with conn.cursor() as cursor:
-            cursor.execute(f"DROP TABLE post_session_{session_name}")
+            cursor.execute(f"DROP TABLE post_session_{session_name}--")
 
         conn.autocommit = False
         return 0
@@ -171,7 +171,7 @@ def create_users_posts_table(sha256_user_id):
         conn.autocommit = True
 
         with conn.cursor() as cursor:
-            cursor.execute(f"CREATE TABLE user_posts_{sha256_user_id} AS (SELECT * FROM posts) with no data")
+            cursor.execute(f"CREATE TABLE user_posts_{sha256_user_id} AS (SELECT * FROM posts) with no data--")
 
         conn.autocommit = False
         return 0
