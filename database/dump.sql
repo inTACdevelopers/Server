@@ -31,7 +31,9 @@ CREATE TABLE public.posts (
     seller_contact character varying(255) NOT NULL,
     from_user integer NOT NULL,
     file_path character varying(512) NOT NULL,
-    creation_time character varying(255) NOT NULL
+    creation_time character varying(255) NOT NULL,
+    likes bigint DEFAULT 0 NOT NULL,
+    weight double precision DEFAULT 0 NOT NULL
 );
 
 
@@ -70,7 +72,8 @@ CREATE TABLE public.users (
     surname character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
     company character varying(255),
-    birth_date character varying(255)
+    birth_date character varying(255),
+    token character varying(512)
 );
 
 
