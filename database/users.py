@@ -4,8 +4,9 @@ import psycopg2
 import psycopg2.errors as exceptions
 from exeptions import *
 
-#its a dataclass... shit
-#i need class methods...
+
+# its a dataclass... shit
+# i need class methods...
 class User:
     def __init__(self, login, password, surname, name, company, birth):
         self.id = 0
@@ -23,11 +24,13 @@ def get_user(login):
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM users WHERE login='{login}'--")
+            cursor.execute(f"SELECT * FROM users WHERE login='{login}' LIMIT 1--")
 
             user_data = cursor.fetchone()
             if user_data is not None:
-                return User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
+                user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
+                user.id = user_data[0]
+                return user
             else:
                 return None
     except Exception as ex:
@@ -181,4 +184,3 @@ def create_users_posts_table(sha256_user_id):
         return 1  # Error with database
     finally:
         conn.close()
-

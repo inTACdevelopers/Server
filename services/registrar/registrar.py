@@ -22,8 +22,8 @@ class SingInService(pb2_grpc.registrarServicer):
 
             user = get_user(request.login)
             if user is not None:
+                print(f"USER ID {user.id}")
                 hash = hashlib.sha256()
-
                 hash.update(user.id.to_bytes(8,'big'))
                 sha_id = hash.hexdigest()
                 create_users_posts_table(sha_id)

@@ -8,6 +8,7 @@ class PostMakeServise(pb2_grpc.postMakerServicer):
         print("make post request")
         make_post_response = pb2.makePostResponse()
 
+        print(request.user_id)
         code = make_post(request.post_title, request.post_description, request.seller_contact, request.user_id,
                          request.photo_bytes)
 

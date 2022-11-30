@@ -44,9 +44,9 @@ def make_post(title:str, desrc:str, contact:str, user:int, photo_bytes):
             server_file_title = dir + server_file_title
 
 
-            hash = hashlib.sha256()
-            hash.update(user.to_bytes(8,'big'))
-            sha256 = hash.hexdigest()
+            _hash = hashlib.sha256()
+            _hash.update(user.to_bytes(8,'big'))
+            sha256 = _hash.hexdigest()
 
 
             with conn.cursor() as cursor:
@@ -131,7 +131,7 @@ def get_posts_paginated(last_weight, limit, session_name):
         conn.close()
 
 
-def get_users_posts_paginated(last_id,limin,sha_256_id):
+def get_users_posts_paginated(last_id,limit,sha_256_id):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
@@ -175,7 +175,7 @@ def get_first_post(session_name):
         print(ex)
         return None
     finally:
-        conn.clos
+        conn.close()
 
 
 # TODO
