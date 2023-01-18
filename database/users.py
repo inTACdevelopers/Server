@@ -137,7 +137,7 @@ def create_user_post_session(session_name):
 
         with conn.cursor() as cursor:
             cursor.execute(f"CREATE TABLE post_session_{session_name} "
-                           f"AS SELECT * FROM posts ORDER BY weight DESC LIMIT 500--")
+                           f"AS SELECT * FROM posts ORDER BY weight DESC LIMIT 500 --")
         conn.autocommit = False
         return 0
     except Exception as ex:

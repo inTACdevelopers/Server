@@ -149,8 +149,12 @@ class PostLiker(pb2_grpc.LikePostServicer):
     def SendLike(self, request, context):
         print(f"Send Like request post:{request.post_id} from:{request.from_user}")
 
+
+
         response = pb2.LikePostResponse()
         response.code = likePost(request.post_id)
+
+        calculate_weight(request.post_id)
 
         if response.code == 0:
             response.state = "OK"
@@ -160,4 +164,16 @@ class PostLiker(pb2_grpc.LikePostServicer):
         return response
 
     def UnLike(self, request, context):
-        pass
+        print(f"UnLike request post:{request.post_id} from:{request.from_user}")
+
+        response = pb2.UnLikePostResponse()
+        response.code = un_likePost(request.post_id)
+
+        calculate_weight(request.post_id)
+
+        if response.code == 0:
+            response.state = "OK"
+        else:
+            response.state = "Server error"
+
+        return response

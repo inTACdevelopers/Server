@@ -23,8 +23,11 @@ class Post():
         self.likes = 0
         self.weight = 0
 
+    def weight_function(self):
+        self.weight = self.likes
 
-def make_post(title:str, desrc:str, contact:str, user:int, photo_bytes):
+
+def make_post(title: str, desrc: str, contact: str, user: int, photo_bytes):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -43,11 +46,9 @@ def make_post(title:str, desrc:str, contact:str, user:int, photo_bytes):
 
             server_file_title = dir + server_file_title
 
-
             _hash = hashlib.sha256()
-            _hash.update(user.to_bytes(8,'big'))
+            _hash.update(user.to_bytes(8, 'big'))
             sha256 = _hash.hexdigest()
-
 
             with conn.cursor() as cursor:
                 cursor.execute(
@@ -131,7 +132,7 @@ def get_posts_paginated(last_weight, limit, session_name):
         conn.close()
 
 
-def get_users_posts_paginated(last_id,limit,sha_256_id):
+def get_users_posts_paginated(last_id, limit, sha_256_id):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
@@ -161,6 +162,7 @@ def get_users_posts_paginated(last_id,limit,sha_256_id):
 
     finally:
         conn.close()
+
 
 def get_first_post(session_name):
     try:
@@ -195,6 +197,73 @@ def likePost(post_id: int):
     except Exception as ex:
         print(f"{ex} in likePost")
         return 1
+    finally:
+        conn.close()
+
+
+def un_likePost(post_id: int):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        with conn.cursor() as cursor:
+            cursor.execute(f"UPDATE posts SET likes=likes - 1 WHERE id={post_id}--")
+
+            conn.autocommit = False
+            return 0
+
+    except Exception as ex:
+        print(f"{ex} in likePost")
+        return 1
+    finally:
+        conn.close()
+
+
+def get_weight_params(post_id: int) -> []:
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM posts WHERE id={post_id}--")
+            post_data = cursor.fetchone()
+
+            params = [post_data[-2]]
+            conn.autocommit = False
+            return params
+
+    except Exception as ex:
+        print(f"{ex} in get_weight_params")
+        return None
+    finally:
+        conn.close()
+
+
+def calculate_weight(post_id: int):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        params = get_weight_params(post_id)
+
+        count_of_likes = params[0]
+
+        new_weight = count_of_likes
+
+        if params != None and params != []:
+
+            conn.autocommit = True
+            with conn.cursor() as cursor:
+                cursor.execute(f"UPDATE posts SET weight={new_weight} WHERE id={post_id}--")
+
+                conn.autocommit = False
+                return 0
+        else:
+            print(f"Error in calculate_weight 'EMPTY LIST'")
+            return 1
+
+    except Exception as ex:
+        print(f"{ex} in calculate_weight")
+        return 2
     finally:
         conn.close()
 
