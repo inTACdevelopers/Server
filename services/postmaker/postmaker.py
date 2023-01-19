@@ -1,6 +1,7 @@
 import services.postmaker.posts_pb2 as pb2
 import services.postmaker.posts_pb2_grpc as pb2_grpc
 from database.posts import *
+from database.users import get_user_id
 
 
 class PostMakeServise(pb2_grpc.postMakerServicer):
@@ -8,7 +9,6 @@ class PostMakeServise(pb2_grpc.postMakerServicer):
         print("make post request")
         make_post_response = pb2.makePostResponse()
 
-        print(request.user_id)
         code = make_post(request.post_title, request.post_description, request.seller_contact, request.user_id,
                          request.photo_bytes)
 
@@ -128,28 +128,57 @@ class PostGetter(pb2_grpc.postGetterServicer):
         return get_first_id_response
 
     def GetUserPosts(self, request, context):
-        print(f'Get user post {request.user_id} id == {request.post_id}')
+        print(f'Get user post user: {request.user_id} id: {request.post_id}')
+        get_user_post_response = pb2.GetPostPaginatedResponse()
 
         hash = hashlib.sha256()
         hash.update(request.user_id.to_bytes(8, 'big'))
-        sha_256 = hash.hexdigest()
+        token = hash.hexdigest()
 
-        posts_array = get_users_posts_paginated(request.post_id, request.limit, sha_256)
+        posts_array = get_users_posts_paginated(request.post_id, request.limit, token)
+        posts = []
 
-        get_user_post_response = pb2.GetPostPaginatedResponse()
+        if posts_array is not None:
+            if len(posts_array) == 0:
+                post = pb2.GetPostResponse()
 
-        #TODO
-        #Допрогай завтра логику выдачи постов для конкретного пользователя
-        #Это сейчас работа для личного кабинета
+                post.state = "Empty scroll!"
+                post.code = 3
+                posts.append(post)
+                get_user_post_response.posts.extend(posts)
+
+            for item in posts_array:
+                post = pb2.GetPostResponse()
+
+                post.post_id = item.id
+                post.post_title = item.title
+                post.photo_bytes = item.photo_bytes
+                post.post_description = item.descr
+                post.seller_contact = item.seller_contact
+                post.creation_time = item.creation_date
+                post.user_id = item.from_user
+                # post.weight = item.weight
+                post.state = "OK"
+                post.code = 0
+
+                posts.append(post)
+
+        else:
+            post = pb2.GetPostResponse()
+            post.state = "Server Error (#db)"
+            post.code = 3
+            posts.append(post)
+
+
+        get_user_post_response.posts.extend(posts)
+
+        return get_user_post_response
+
 
 class PostLiker(pb2_grpc.LikePostServicer):
-    # TODO
-    # Здесь нужно обработать штуку с изменением веса поста
-    # Так же вес поста меняется исключительно на сервере.
+
     def SendLike(self, request, context):
         print(f"Send Like request post:{request.post_id} from:{request.from_user}")
-
-
 
         response = pb2.LikePostResponse()
         response.code = likePost(request.post_id)

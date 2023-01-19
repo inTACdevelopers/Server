@@ -19,7 +19,28 @@ class User:
         self.birth_date = birth
 
 
-def get_user(login):
+def get_user_id(user_id: int) -> User:
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM users WHERE id={user_id} LIMIT 1--")
+
+            user_data = cursor.fetchone()
+            if user_data is not None:
+                user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
+                user.id = user_data[0]
+                return user
+            else:
+                return None
+    except Exception as ex:
+        print("There was some errors while working with database")
+        print(ex)
+    finally:
+        conn.close()
+
+
+def get_user(login) -> User:
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -167,6 +188,8 @@ def drop_user_post_session(session_name):
         conn.close()
 
 
+
+
 def create_users_posts_table(sha256_user_id):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
@@ -175,6 +198,13 @@ def create_users_posts_table(sha256_user_id):
 
         with conn.cursor() as cursor:
             cursor.execute(f"CREATE TABLE user_posts_{sha256_user_id} AS (SELECT * FROM posts) with no data--")
+
+            cursor.execute(f"CREATE SEQUENCE id_seq_user_posts_{sha256_user_id} "
+                           f"AS BIGINT "
+                           f"INCREMENT 1 "
+                           f"MINVALUE 1 "
+                           f"START  1 "
+                           f"OWNED BY user_posts_{sha256_user_id}.id --")
 
         conn.autocommit = False
         return 0

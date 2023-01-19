@@ -11,6 +11,7 @@ service postGetter{
   rpc GetPostPaginated(GetPostRequest) returns (GetPostPaginatedResponse);
   rpc GetUserPosts(GetUserPostRequest) returns (GetPostPaginatedResponse);
   rpc GetFirstPostId (GetFirstPostIdRequest) returns (GetFirstPostIdResponse);
+
 }
 
 service LikePost{

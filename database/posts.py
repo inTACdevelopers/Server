@@ -55,9 +55,13 @@ def make_post(title: str, desrc: str, contact: str, user: int, photo_bytes):
                     "INSERT INTO posts (title,description,seller_contact,from_user,file_path,creation_time) VALUES("
                     f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')--")
 
+                cursor.execute(f"SELECT nextval('id_seq_user_posts_{sha256}');--")
+                post_id = cursor.fetchone()
+
                 cursor.execute(
-                    f"INSERT INTO user_posts_{sha256} (title,description,seller_contact,from_user,file_path,creation_time) VALUES("
-                    f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')--")
+                    f"INSERT INTO user_posts_{sha256} (id,title,description,seller_contact,from_user,file_path,"
+                    f"creation_time) VALUES("
+                    f"{post_id[0]},'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')--")
 
                 conn.autocommit = False
                 return 0
@@ -132,7 +136,7 @@ def get_posts_paginated(last_weight, limit, session_name):
         conn.close()
 
 
-def get_users_posts_paginated(last_id, limit, sha_256_id):
+def get_users_posts_paginated(last_id, limit, token):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
@@ -140,7 +144,7 @@ def get_users_posts_paginated(last_id, limit, sha_256_id):
         with conn.cursor() as cursor:
 
             cursor.execute(
-                f"SELECT * FROM user_posts_{sha_256_id} WHERE id > {last_id} ORDER BY weight DESC LIMIT {limit}--")
+                f"SELECT * FROM user_posts_{token} WHERE id > {last_id} ORDER BY weight DESC LIMIT {limit}--")
             posts_data = cursor.fetchall()
 
             if posts_data == []:
@@ -159,7 +163,8 @@ def get_users_posts_paginated(last_id, limit, sha_256_id):
                     out_posts.append(post)
         return out_posts
 
-
+    except EmptyScrollExeption as ex:
+        print(ex)
     finally:
         conn.close()
 
