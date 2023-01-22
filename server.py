@@ -22,7 +22,7 @@ from config import *
 # python -m grpc_tools.protoc -I./protos --python_out=services/sessions --grpc_python_out=services/sessions protos/sessions.proto
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=1000))
 
     registration_pb2_grpc.add_registrarServicer_to_server(SingInService(), server)
     authorization_pb2_grpc.add_authorizerServicer_to_server(SingUpService(), server)

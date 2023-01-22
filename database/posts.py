@@ -22,6 +22,7 @@ class Post():
         self.photo_bytes = bytes
         self.likes = 0
         self.weight = 0
+        self.like = 0
 
     def weight_function(self):
         self.weight = self.likes
@@ -51,18 +52,36 @@ def make_post(title: str, desrc: str, contact: str, user: int, photo_bytes):
             sha256 = _hash.hexdigest()
 
             with conn.cursor() as cursor:
+                # Запрос на вставку поста
                 cursor.execute(
                     "INSERT INTO posts (title,description,seller_contact,from_user,file_path,creation_time) VALUES("
                     f"'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')--")
 
+                # Запрос на обновление последовательности постов юзера
                 cursor.execute(f"SELECT nextval('id_seq_user_posts_{sha256}');--")
                 post_id = cursor.fetchone()
+
+                # Запрос на вставку поста в табличку с постами пользователя
 
                 cursor.execute(
                     f"INSERT INTO user_posts_{sha256} (id,title,description,seller_contact,from_user,file_path,"
                     f"creation_time) VALUES("
                     f"{post_id[0]},'{title}','{desrc}','{contact}',{user},'{server_file_title}','{str(datetime.datetime.today())}')--")
 
+                # Запрос на получение id последнего созданого поста
+                cursor.execute(f"SELECT currval('posts_id_seq');--")
+                last_created_post_id = int(cursor.fetchone()[0])
+                print(last_created_post_id)
+
+                # билдим хэш из последнего id-шника
+                _hash = hashlib.sha256()
+                _hash.update(last_created_post_id.to_bytes(8, 'big'))
+                post_hash_id = _hash.hexdigest()
+
+                # Запрос на создание таблицы с лайками для данного поста
+                cursor.execute(f'CREATE TABLE post_likes_{post_hash_id} ('
+                               f'user_id BIGINT PRIMARY KEY'
+                               f');--')
                 conn.autocommit = False
                 return 0
         else:
@@ -98,7 +117,7 @@ def get_post(post_id):
         conn.close()
 
 
-def get_posts_paginated(last_id, limit, session_name):
+def get_posts_paginated(last_id: int, limit: int, session_name: str, user_id: int):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
@@ -121,6 +140,7 @@ def get_posts_paginated(last_id, limit, session_name):
                 with open(path, "rb") as file:
                     post = Post(id=item[0], title=item[1], descr=item[2], contact=item[3],
                                 user=item[4], bytes=file.read(), time=item[6])
+                    post.like = is_user_liked_post(user_id=user_id, post_id=post.id)
                     post.weight = item[8]
                     out_posts.append(post)
         return out_posts
@@ -185,16 +205,19 @@ def get_first_post(session_name):
         conn.close()
 
 
-# TODO
-#  Сделай таблицу с лайками в нее после успешного лайка должен добавляться VALUES(like_id,user_id,post_id,seller_id)
-#  Потом делай выборку, это будет надо для уведомлений о лайках и просмотра списка лайков
-def likePost(post_id: int):
+def likePost(post_id: int, user_id: int):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         conn.autocommit = True
         with conn.cursor() as cursor:
             cursor.execute(f"UPDATE posts SET likes=likes + 1 WHERE id={post_id}--")
+
+            _hash = hashlib.sha256()
+            _hash.update(post_id.to_bytes(8, 'big'))
+            post_hash_id = _hash.hexdigest()
+
+            cursor.execute(f"INSERT INTO post_likes_{post_hash_id} VALUES({user_id})--")
 
             conn.autocommit = False
             return 0
@@ -206,19 +229,50 @@ def likePost(post_id: int):
         conn.close()
 
 
-def un_likePost(post_id: int):
+def un_likePost(post_id: int, user_id: int):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
         conn.autocommit = True
         with conn.cursor() as cursor:
+
             cursor.execute(f"UPDATE posts SET likes=likes - 1 WHERE id={post_id}--")
+
+            _hash = hashlib.sha256()
+            _hash.update(post_id.to_bytes(8, 'big'))
+            post_hash_id = _hash.hexdigest()
+
+            cursor.execute(f"DELETE FROM post_likes_{post_hash_id} WHERE user_id = {user_id}--")
 
             conn.autocommit = False
             return 0
 
     except Exception as ex:
         print(f"{ex} in likePost")
+        return 1
+    finally:
+        conn.close()
+
+
+def is_user_liked_post(user_id: int, post_id: int):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        with conn.cursor() as cursor:
+
+            _hash = hashlib.sha256()
+            _hash.update(post_id.to_bytes(8, 'big'))
+            post_hash_id = _hash.hexdigest()
+
+            cursor.execute(f"SELECT * FROM post_likes_{post_hash_id} WHERE user_id = {user_id}--")
+            if cursor.fetchone() == None:
+                return 0
+            conn.autocommit = False
+            return 1
+
+    except Exception as ex:
+        print(f"{ex} in is_user_liked_post")
         return 1
     finally:
         conn.close()

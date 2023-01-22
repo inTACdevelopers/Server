@@ -39,6 +39,8 @@ message GetPostRequest{
   int64 post_id = 1;
   int64 limit = 2;
   string session_name = 3;
+  int64 user_id = 4;
+
 }
 
 message GetUserPostRequest{
@@ -58,7 +60,7 @@ message GetPostResponse{
   string creation_time = 7;
   int32 post_id = 8;
   int64 user_id = 9;
-
+  bool like = 10;
 }
 
 message GetPostPaginatedResponse{

@@ -48,7 +48,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
         print(f"get post pagination request id(p)=={request.post_id}")
 
         get_posts_paginated_response = pb2.GetPostPaginatedResponse()
-        posts_array = get_posts_paginated(request.post_id, request.limit, request.session_name)
+        posts_array = get_posts_paginated(request.post_id, request.limit, request.session_name,request.user_id)
         posts = []
 
         if posts_array is not None and type(posts_array) is not int:
@@ -72,7 +72,7 @@ class PostGetter(pb2_grpc.postGetterServicer):
                 post.user_id = item.from_user
                 post.state = "OK"
                 post.code = 0
-
+                post.like = item.like
                 posts.append(post)
 
         else:
@@ -82,7 +82,6 @@ class PostGetter(pb2_grpc.postGetterServicer):
             posts.append(post)
 
         get_posts_paginated_response.posts.extend(posts)
-
 
         get_posts_paginated_response.posts.extend(posts)
 
@@ -160,7 +159,7 @@ class PostLiker(pb2_grpc.LikePostServicer):
         print(f"Send Like request post:{request.post_id} from:{request.from_user}")
 
         response = pb2.LikePostResponse()
-        response.code = likePost(request.post_id)
+        response.code = likePost(request.post_id, request.from_user)
 
         calculate_weight(request.post_id)
 
@@ -175,7 +174,7 @@ class PostLiker(pb2_grpc.LikePostServicer):
         print(f"UnLike request post:{request.post_id} from:{request.from_user}")
 
         response = pb2.UnLikePostResponse()
-        response.code = un_likePost(request.post_id)
+        response.code = un_likePost(request.post_id, request.from_user)
 
         calculate_weight(request.post_id)
 
