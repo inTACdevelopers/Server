@@ -159,10 +159,15 @@ def create_user_post_session(session_name):
         with conn.cursor() as cursor:
             cursor.execute(f"CREATE TABLE post_session_{session_name} "
                            f"AS SELECT * FROM posts ORDER BY weight DESC LIMIT 500 --")
+            cursor.execute(f"ALTER TABLE post_session_{session_name} ADD COLUMN position serial --")
         conn.autocommit = False
         return 0
     except Exception as ex:
         print("There was some errors while working with database")
+
+        drop_user_post_session(session_name)
+        create_user_post_session(session_name)
+
         print(ex)
         return 1  # Error with database
     finally:
@@ -186,8 +191,6 @@ def drop_user_post_session(session_name):
         return 1  # Error with database
     finally:
         conn.close()
-
-
 
 
 def create_users_posts_table(sha256_user_id):

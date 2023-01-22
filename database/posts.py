@@ -98,7 +98,7 @@ def get_post(post_id):
         conn.close()
 
 
-def get_posts_paginated(last_weight, limit, session_name):
+def get_posts_paginated(last_id, limit, session_name):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
         out_posts = []
@@ -106,7 +106,7 @@ def get_posts_paginated(last_weight, limit, session_name):
         with conn.cursor() as cursor:
 
             cursor.execute(
-                f"SELECT * FROM post_session_{session_name} WHERE weight < {last_weight} ORDER BY weight DESC LIMIT {limit}--")
+                f"SELECT * FROM post_session_{session_name} WHERE position > {last_id} LIMIT {limit}--")
             posts_data = cursor.fetchall()
 
             if posts_data == []:
@@ -251,7 +251,6 @@ def calculate_weight(post_id: int):
         params = get_weight_params(post_id)
 
         count_of_likes = params[0]
-
         new_weight = count_of_likes
 
         if params != None and params != []:

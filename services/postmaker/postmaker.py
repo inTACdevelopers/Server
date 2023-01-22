@@ -45,64 +45,44 @@ class PostGetter(pb2_grpc.postGetterServicer):
         return post_get_response
 
     def GetPostPaginated(self, request, context):
-        print(f"get post pagination request w(p)=={request.weight}")
-
-        arr = get_posts_paginated(request.weight, request.limit, request.session_name)
+        print(f"get post pagination request id(p)=={request.post_id}")
 
         get_posts_paginated_response = pb2.GetPostPaginatedResponse()
+        posts_array = get_posts_paginated(request.post_id, request.limit, request.session_name)
         posts = []
-        if arr is not None:
 
-            if type(arr) is int and arr == 1:
+        if posts_array is not None and type(posts_array) is not int:
+            if len(posts_array) == 0:
+                post = pb2.GetPostResponse()
 
-                arr = get_posts_paginated(get_first_post(request.session_name)[8] + 1, request.limit,
-                                          request.session_name)
-
-                for item in arr:
-                    post = pb2.GetPostResponse()
-
-                    post.post_id = item.id
-                    post.post_title = item.title
-                    post.photo_bytes = item.photo_bytes
-                    post.post_description = item.descr
-                    post.seller_contact = item.seller_contact
-                    post.creation_time = item.creation_date
-                    post.user_id = item.from_user
-                    post.weight = item.weight
-
-                    posts.append(post)
-                    post.state = "Empty"
-                    post.code = 3
-
+                post.state = "Empty scroll!"
+                post.code = 3
+                posts.append(post)
                 get_posts_paginated_response.posts.extend(posts)
-                return get_posts_paginated_response
-            elif type(arr) is not int:
 
-                for item in arr:
-                    post = pb2.GetPostResponse()
+            for item in posts_array:
+                post = pb2.GetPostResponse()
 
-                    post.post_id = item.id
-                    post.post_title = item.title
-                    post.photo_bytes = item.photo_bytes
-                    post.post_description = item.descr
-                    post.seller_contact = item.seller_contact
-                    post.creation_time = item.creation_date
-                    post.user_id = item.from_user
-                    post.weight = item.weight
-                    post.state = "OK"
-                    post.code = 0
+                post.post_id = item.id
+                post.post_title = item.title
+                post.photo_bytes = item.photo_bytes
+                post.post_description = item.descr
+                post.seller_contact = item.seller_contact
+                post.creation_time = item.creation_date
+                post.user_id = item.from_user
+                post.state = "OK"
+                post.code = 0
 
-                    posts.append(post)
+                posts.append(post)
+
         else:
             post = pb2.GetPostResponse()
-            if type(arr) is int and arr == 2:
-                post.state = "Server Error (#db)"
-                post.code = 1
-            elif request.post_id > get_first_post(request.session_name)[0]:
-                post.state = "Incorrect Post Id (#server)"
-                post.code = 2
-
+            post.state = "Server Error (#db)"
+            post.code = 3
             posts.append(post)
+
+        get_posts_paginated_response.posts.extend(posts)
+
 
         get_posts_paginated_response.posts.extend(posts)
 
@@ -168,7 +148,6 @@ class PostGetter(pb2_grpc.postGetterServicer):
             post.state = "Server Error (#db)"
             post.code = 3
             posts.append(post)
-
 
         get_user_post_response.posts.extend(posts)
 
