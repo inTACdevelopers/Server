@@ -20,7 +20,7 @@ from config import *
 # python -m grpc_tools.protoc -I./protos --python_out=services/postmaker --grpc_python_out=services/postmaker protos/posts.proto
 # python -m grpc_tools.protoc -I./protos --python_out=services/YmlParser --grpc_python_out=services/YmlParser protos/yml.proto
 # python -m grpc_tools.protoc -I./protos --python_out=services/sessions --grpc_python_out=services/sessions protos/sessions.proto
-
+# python -m grpc_tools.protoc -I./protos --python_out=services/profile --grpc_python_out=services/profile protos/profile.proto
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1000))
 

@@ -21,7 +21,7 @@ message SingUpResponse{
   string state = 2;
   int32 user_type = 3;
 
-  int32 id = 4;
+  int64 id = 4;
   string login = 5;
   string password = 6;
   string name = 7;

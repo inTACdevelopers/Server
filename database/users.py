@@ -36,6 +36,7 @@ def get_user_id(user_id: int) -> User:
     except Exception as ex:
         print("There was some errors while working with database")
         print(ex)
+        return None
     finally:
         conn.close()
 

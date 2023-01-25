@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package profile;
+
+service userGetter{
+  rpc GetUser_ById(GetUserRequest) returns (GetUserResponse);
+}
+
+
+message GetUserRequest{
+  int64 user_id = 1;
+}
+message GetUserResponse{
+  int32 code = 1;
+  string state = 2;
+  int32 user_type = 3;
+
+  int64 id = 4;
+  string login = 5;
+  string password = 6;
+  string name = 7;
+  string surname = 8;
+  string company = 9;
+}
