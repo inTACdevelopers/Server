@@ -1,3 +1,5 @@
+import datetime
+
 from config import *
 
 import psycopg2
@@ -17,6 +19,7 @@ class User:
         self.company = company
         self.user_type = 0
         self.birth_date = birth
+        self.about = ''
 
 
 def get_user_id(user_id: int) -> User:
@@ -30,6 +33,7 @@ def get_user_id(user_id: int) -> User:
             if user_data is not None:
                 user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], user_data[6])
                 user.id = user_data[0]
+                user.about = user_data[9]
                 return user
             else:
                 return None
@@ -194,6 +198,26 @@ def drop_user_post_session(session_name):
         conn.close()
 
 
+def get_count_of_user_posts(sha256_user_id):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        count = -1
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM user_posts_{sha256_user_id}--")
+            count = int(cursor.fetchone()[0])
+
+        conn.autocommit = False
+        return count
+    except Exception as ex:
+        print("There was some errors while working with database")
+        print(ex)
+        return -1  # Error with database
+    finally:
+        conn.close()
+
+
 def create_users_posts_table(sha256_user_id):
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
@@ -217,4 +241,151 @@ def create_users_posts_table(sha256_user_id):
         print(ex)
         return 1  # Error with database
     finally:
+        conn.close()
+
+
+def update_user_photo(user_id: int, photo_bytes) -> int:
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+        path = server_file_title = str(hash(str(datetime.datetime.today()))) + ".JPEG"
+        dir = PROFILE_PHOTO_DIR
+        if DEBAG:
+            dir = DEBAG_PROFILE_PHOTO_DIR
+        if not os.path.exists(dir + server_file_title):
+            with conn.cursor() as cursor:
+                cursor.execute(f"UPDATE users SET profile_photo={path} WHERE id={user_id}--")
+
+            with open(dir + server_file_title, "wb") as file:
+                file.write(photo_bytes)
+            conn.autocommit = False
+            return 0
+        else:
+            return 1
+
+
+    except Exception as ex:
+        print("DataBase Error in update_user_photo")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
+
+def update_user_about(user_id: int, about: str):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"UPDATE users SET about={about} WHERE id={user_id}--")
+
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("DataBase Error in update_user_about")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
+
+def update_user_name(user_id: int, name: str):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"UPDATE users SET name={name} WHERE id={user_id}--")
+
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("DataBase Error in update_user_about")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
+
+def update_user_login(user_id: int, login: str):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"UPDATE users SET login={login} WHERE id={user_id}--")
+
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("DataBase Error in update_user_about")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
+
+def update_user_password(user_id: int, password: str):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"UPDATE users SET password={password} WHERE id={user_id}--")
+
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("DataBase Error in update_user_about")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
+
+def update_user_sur_name(user_id: int, surname: str):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"UPDATE users SET surname={surname} WHERE id={user_id}--")
+
+        conn.autocommit = False
+        return 0
+    except Exception as ex:
+        print("DataBase Error in update_user_about")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.close()
+
+
+def get_user_photo(user_id: int):
+    try:
+        conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+        conn.autocommit = True
+
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT profile_photo FROM users WHERE id={user_id}--")
+            path = cursor.fetchone()
+            if path is not None:
+                with open(path, "rb") as file:
+                    return file.read()
+
+        return 0
+    except Exception as ex:
+        print("DataBase Error in get_user_photo")
+        print(ex)
+        return 1  # Error with database
+    finally:
+        conn.autocommit = False
         conn.close()

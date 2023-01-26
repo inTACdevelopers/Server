@@ -6,5 +6,4 @@ import hashlib
 from services.YmlParser.parser import *
 
 if __name__ == "__main__":
-
     serve()

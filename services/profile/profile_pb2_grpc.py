@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import services.profile.profile_pb2 as profile__pb2
+import profile_pb2 as profile__pb2
 
 
 class userGetterStub(object):
@@ -62,5 +62,198 @@ class userGetter(object):
         return grpc.experimental.unary_unary(request, target, '/profile.userGetter/GetUser_ById',
             profile__pb2.GetUserRequest.SerializeToString,
             profile__pb2.GetUserResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class userUpdaterStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.UpdateName = channel.unary_unary(
+                '/profile.userUpdater/UpdateName',
+                request_serializer=profile__pb2.UpdateNameRequest.SerializeToString,
+                response_deserializer=profile__pb2.UpdateNameResponse.FromString,
+                )
+        self.UpdateLogin = channel.unary_unary(
+                '/profile.userUpdater/UpdateLogin',
+                request_serializer=profile__pb2.UpdateLoginRequest.SerializeToString,
+                response_deserializer=profile__pb2.UpdateLoginResponse.FromString,
+                )
+        self.UpdateAbout = channel.unary_unary(
+                '/profile.userUpdater/UpdateAbout',
+                request_serializer=profile__pb2.UpdateAboutRequest.SerializeToString,
+                response_deserializer=profile__pb2.UpdateAboutResponse.FromString,
+                )
+        self.UpdatePassword = channel.unary_unary(
+                '/profile.userUpdater/UpdatePassword',
+                request_serializer=profile__pb2.UpdatePasswordRequest.SerializeToString,
+                response_deserializer=profile__pb2.UpdatePasswordResponse.FromString,
+                )
+        self.UpdatePhoto = channel.unary_unary(
+                '/profile.userUpdater/UpdatePhoto',
+                request_serializer=profile__pb2.UpdatePhotoRequest.SerializeToString,
+                response_deserializer=profile__pb2.UpdatePhotoResponse.FromString,
+                )
+
+
+class userUpdaterServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def UpdateName(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateLogin(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateAbout(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdatePassword(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdatePhoto(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_userUpdaterServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'UpdateName': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateName,
+                    request_deserializer=profile__pb2.UpdateNameRequest.FromString,
+                    response_serializer=profile__pb2.UpdateNameResponse.SerializeToString,
+            ),
+            'UpdateLogin': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateLogin,
+                    request_deserializer=profile__pb2.UpdateLoginRequest.FromString,
+                    response_serializer=profile__pb2.UpdateLoginResponse.SerializeToString,
+            ),
+            'UpdateAbout': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateAbout,
+                    request_deserializer=profile__pb2.UpdateAboutRequest.FromString,
+                    response_serializer=profile__pb2.UpdateAboutResponse.SerializeToString,
+            ),
+            'UpdatePassword': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdatePassword,
+                    request_deserializer=profile__pb2.UpdatePasswordRequest.FromString,
+                    response_serializer=profile__pb2.UpdatePasswordResponse.SerializeToString,
+            ),
+            'UpdatePhoto': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdatePhoto,
+                    request_deserializer=profile__pb2.UpdatePhotoRequest.FromString,
+                    response_serializer=profile__pb2.UpdatePhotoResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'profile.userUpdater', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class userUpdater(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def UpdateName(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.userUpdater/UpdateName',
+            profile__pb2.UpdateNameRequest.SerializeToString,
+            profile__pb2.UpdateNameResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UpdateLogin(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.userUpdater/UpdateLogin',
+            profile__pb2.UpdateLoginRequest.SerializeToString,
+            profile__pb2.UpdateLoginResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UpdateAbout(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.userUpdater/UpdateAbout',
+            profile__pb2.UpdateAboutRequest.SerializeToString,
+            profile__pb2.UpdateAboutResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UpdatePassword(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.userUpdater/UpdatePassword',
+            profile__pb2.UpdatePasswordRequest.SerializeToString,
+            profile__pb2.UpdatePasswordResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UpdatePhoto(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.userUpdater/UpdatePhoto',
+            profile__pb2.UpdatePhotoRequest.SerializeToString,
+            profile__pb2.UpdatePhotoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
