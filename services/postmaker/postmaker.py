@@ -1,7 +1,7 @@
 import services.postmaker.posts_pb2 as pb2
 import services.postmaker.posts_pb2_grpc as pb2_grpc
 from database.posts import *
-from database.users import get_user_id
+from database.users import get_user_by_id
 
 
 class PostMakeServise(pb2_grpc.postMakerServicer):

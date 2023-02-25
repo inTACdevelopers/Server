@@ -94,6 +94,22 @@ def make_post(title: str, desrc: str, contact: str, user: int, photo_bytes):
     finally:
         conn.close()
 
+def remove_all_post_likes_tables():
+    conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
+
+
+    for i in range(0,500):
+        _hash = hashlib.sha256()
+        _hash.update(i.to_bytes(8, 'big'))
+        post_hash_id = _hash.hexdigest()
+        conn.autocommit = True
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(f'DROP TABLE post_likes_{post_hash_id}--')
+            conn.autocommit = False
+        except:
+            pass
+
 
 def get_post(post_id):
     try:

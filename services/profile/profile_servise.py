@@ -10,7 +10,7 @@ class UserGetterServise(pb2_grpc.userGetterServicer):
         print(f"Get User for Profile Request id = {request.user_id}")
         get_user_response = pb2.GetUserResponse()
 
-        user = get_user_id(request.user_id)
+        user = get_user_by_id(request.user_id)
 
         hash = hashlib.sha256()
         hash.update(user.id.to_bytes(8, 'big'))

@@ -13,7 +13,8 @@ class YmlUploaderServise(pb2_grpc.YmlPostMakerServicer):
         response = pb2.UploadResponse()
 
         try:
-            xml_file_name = getyml(request.url)
+            xml_file_name = getyml(request.ymlUrl)
+
             for item in parse_offersinfo_yml(xml_file_name):
                 for id in item.keys():
                     curr_good = item[id]
@@ -32,6 +33,7 @@ class YmlUploaderServise(pb2_grpc.YmlPostMakerServicer):
                     photo = BytesIO(response.content).read()
 
                     make_post(title, description, contact, request.from_user, photo)
+                    break
             response.code = 0
             response.state = "OK"
         except Exception as ex:
@@ -42,5 +44,5 @@ class YmlUploaderServise(pb2_grpc.YmlPostMakerServicer):
         finally:
             if os.path.exists(xml_file_name):
                 os.remove(xml_file_name)
-            return response
+        return response
 

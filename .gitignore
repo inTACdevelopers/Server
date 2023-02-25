@@ -1,4 +1,5 @@
 config.py
 
 /database/photos/
+/database/yml/
 /database/profile_photos/

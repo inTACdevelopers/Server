@@ -9,9 +9,9 @@ reqinfo = ["name", "company", "url", "platform", "version", "agency", "email"]
 
 
 def getyml(url) -> str:
-
-    response =  requests.get(url)
-    xml_file=f"{YML_DIR}/{hash(url)}.yml"
+    print(url)
+    response = requests.get(url)
+    xml_file = f"{YML_DIR}/{hash(url)}.yml"
     with open(xml_file, "wb") as f:
         f.write(response.content)
 
@@ -113,4 +113,3 @@ def parse_offersinfo_yml(xml):
                 offer[elem2.attrib.get("id")] = offerinfo
                 offers.append(offer)
     return offers
-

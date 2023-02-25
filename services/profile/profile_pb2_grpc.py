@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import profile_pb2 as profile__pb2
+import services.profile.profile_pb2 as profile__pb2
 
 
 class userGetterStub(object):

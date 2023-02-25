@@ -22,7 +22,7 @@ class User:
         self.about = ''
 
 
-def get_user_id(user_id: int) -> User:
+def get_user_by_id(user_id: int) -> User:
     try:
         conn = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DB_NAME)
 
@@ -255,7 +255,7 @@ def update_user_photo(user_id: int, photo_bytes) -> int:
             dir = DEBAG_PROFILE_PHOTO_DIR
         if not os.path.exists(dir + server_file_title):
             with conn.cursor() as cursor:
-                cursor.execute(f"UPDATE users SET profile_photo={path} WHERE id={user_id}--")
+                cursor.execute(f"UPDATE users SET profile_photo='{path}' WHERE id={user_id}--")
 
             with open(dir + server_file_title, "wb") as file:
                 file.write(photo_bytes)
@@ -299,7 +299,7 @@ def update_user_name(user_id: int, name: str):
         conn.autocommit = True
 
         with conn.cursor() as cursor:
-            cursor.execute(f"UPDATE users SET name={name} WHERE id={user_id}--")
+            cursor.execute(f"UPDATE users SET name='{name}' WHERE id={user_id}--")
 
         conn.autocommit = False
         return 0
@@ -318,7 +318,7 @@ def update_user_login(user_id: int, login: str):
         conn.autocommit = True
 
         with conn.cursor() as cursor:
-            cursor.execute(f"UPDATE users SET login={login} WHERE id={user_id}--")
+            cursor.execute(f"UPDATE users SET login='{login}' WHERE id={user_id}--")
 
         conn.autocommit = False
         return 0
@@ -337,7 +337,7 @@ def update_user_password(user_id: int, password: str):
         conn.autocommit = True
 
         with conn.cursor() as cursor:
-            cursor.execute(f"UPDATE users SET password={password} WHERE id={user_id}--")
+            cursor.execute(f"UPDATE users SET password='{password}' WHERE id={user_id}--")
 
         conn.autocommit = False
         return 0
@@ -356,7 +356,7 @@ def update_user_sur_name(user_id: int, surname: str):
         conn.autocommit = True
 
         with conn.cursor() as cursor:
-            cursor.execute(f"UPDATE users SET surname={surname} WHERE id={user_id}--")
+            cursor.execute(f"UPDATE users SET surname='{surname}' WHERE id={user_id}--")
 
         conn.autocommit = False
         return 0
@@ -376,12 +376,13 @@ def get_user_photo(user_id: int):
 
         with conn.cursor() as cursor:
             cursor.execute(f"SELECT profile_photo FROM users WHERE id={user_id}--")
-            path = cursor.fetchone()
+
+            path = cursor.fetchone()[0]
             if path is not None:
                 with open(path, "rb") as file:
                     return file.read()
 
-        return 0
+        return b""
     except Exception as ex:
         print("DataBase Error in get_user_photo")
         print(ex)
